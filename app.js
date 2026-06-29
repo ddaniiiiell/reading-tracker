@@ -2852,6 +2852,10 @@ function render() {
       const dateA = a.lastReadDate || '0000-00-00';
       const dateB = b.lastReadDate || '0000-00-00';
       return dateB.localeCompare(dateA); // Most recent first
+    } else if (currentSort === 'oldest-read') {
+      const dateA = a.lastReadDate || '9999-99-99'; // Push no-date items to the end
+      const dateB = b.lastReadDate || '9999-99-99';
+      return dateA.localeCompare(dateB); // Oldest first
     } else if (currentSort === 'alphabetical') {
       return a.title.localeCompare(b.title); // A-Z
     } else if (currentSort === 'chapters-count') {
