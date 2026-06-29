@@ -9,6 +9,7 @@ let manhwas = [];
 let currentFilter = 'all';
 let currentSort = 'latest-read';
 let searchQuery = '';
+let currentView = 'grid'; // 'grid' | 'list'
 
 // Default Mock Data for rich visual first-impression
 const MOCK_DATA = [
@@ -57,6 +58,11 @@ function initApp() {
   } else {
     manhwas = [...MOCK_DATA];
     saveData();
+  }
+  
+  const storedView = localStorage.getItem('luxe_manhwa_tracker_view');
+  if (storedView) {
+    currentView = storedView;
   }
   
   // Trigger initial pings for links on load (non-blocking)
@@ -284,6 +290,26 @@ function updateLinkState(id, status) {
 function render() {
   const grid = document.getElementById('manhwa-grid');
   const emptyState = document.getElementById('empty-state');
+  
+  // Apply layout view class
+  if (currentView === 'list') {
+    grid.classList.add('list-view');
+  } else {
+    grid.classList.remove('list-view');
+  }
+
+  // Update view toggle button states
+  const gridBtn = document.getElementById('view-grid-btn');
+  const listBtn = document.getElementById('view-list-btn');
+  if (gridBtn && listBtn) {
+    if (currentView === 'list') {
+      listBtn.classList.add('active');
+      gridBtn.classList.remove('active');
+    } else {
+      gridBtn.classList.add('active');
+      listBtn.classList.remove('active');
+    }
+  }
   
   // 1. Filter
   let filtered = manhwas.filter(m => {
@@ -580,4 +606,25 @@ document.addEventListener('DOMContentLoaded', () => {
     currentSort = e.target.value;
     render();
   });
+
+  // View toggle handlers
+  const gridBtn = document.getElementById('view-grid-btn');
+  const listBtn = document.getElementById('view-list-btn');
+  if (gridBtn && listBtn) {
+    gridBtn.addEventListener('click', () => {
+      if (currentView !== 'grid') {
+        currentView = 'grid';
+        localStorage.setItem('luxe_manhwa_tracker_view', 'grid');
+        render();
+      }
+    });
+
+    listBtn.addEventListener('click', () => {
+      if (currentView !== 'list') {
+        currentView = 'list';
+        localStorage.setItem('luxe_manhwa_tracker_view', 'list');
+        render();
+      }
+    });
+  }
 });
