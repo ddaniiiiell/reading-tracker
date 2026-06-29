@@ -44,8 +44,13 @@
       </div>
       <div class="stat-divider"></div>
       <div class="stat-card">
-        <span class="stat-label">Currently Reading</span>
+        <span class="stat-label">Reading</span>
         <span class="stat-value" id="stat-reading">0</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-card">
+        <span class="stat-label">Plan to Read</span>
+        <span class="stat-value" id="stat-plan-to-read">0</span>
       </div>
       <div class="stat-divider"></div>
       <div class="stat-card">
@@ -69,6 +74,7 @@
           <select id="filter-status" aria-label="Filter by Status">
             <option value="all">All Statuses</option>
             <option value="reading">Reading</option>
+            <option value="plan-to-read">Plan to Read</option>
             <option value="completed">Completed</option>
             <option value="on-hold">On Hold</option>
           </select>
@@ -156,7 +162,7 @@
 
         <div class="form-row">
           <div class="form-group flex-1">
-            <label for="input-chapter">Current Chapter</label>
+            <label for="input-chapter" id="form-label-chapter">Current Chapter</label>
             <input type="number" id="input-chapter" min="0" value="1" placeholder="e.g., 42">
           </div>
           <div class="form-group flex-2">
@@ -164,6 +170,7 @@
             <div class="select-wrapper">
               <select id="input-status">
                 <option value="reading">Reading</option>
+                <option value="plan-to-read">Plan to Read</option>
                 <option value="completed">Completed</option>
                 <option value="on-hold">On Hold</option>
               </select>
@@ -177,7 +184,7 @@
           <small class="form-help">Link to the website where you read this chapter.</small>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="form-group-date">
           <label for="input-date">Last Read Date</label>
           <input type="date" id="input-date">
         </div>

@@ -2302,12 +2302,262 @@ const MOCK_DATA = [
     "notes": "",
     "linkStatus": "active",
     "id": "manhwa_229"
+  },
+  {
+    "title": "Kill the dragon",
+    "chapter": 12,
+    "link": "https://www.asurascans.com/comics/kill-the-dragon/",
+    "lastReadDate": "",
+    "status": "plan-to-read",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_230"
+  },
+  {
+    "title": "King of runs",
+    "chapter": 12,
+    "link": "https://www.asurascans.com/comics/king-of-runes/",
+    "lastReadDate": "",
+    "status": "plan-to-read",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_231"
+  },
+  {
+    "title": "My daughter is the final boss",
+    "chapter": 20,
+    "link": "https://www.asurascans.com/my-daughter-is-the-final-boss-chapter-1/",
+    "lastReadDate": "",
+    "status": "plan-to-read",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_232"
+  },
+  {
+    "title": "Transmigrating to the otherworld once more",
+    "chapter": 0,
+    "link": "",
+    "lastReadDate": "",
+    "status": "plan-to-read",
+    "notes": "",
+    "linkStatus": "unknown",
+    "id": "manhwa_233"
+  },
+  {
+    "title": "My insanely competent underlings",
+    "chapter": 0,
+    "link": "",
+    "lastReadDate": "",
+    "status": "plan-to-read",
+    "notes": "",
+    "linkStatus": "unknown",
+    "id": "manhwa_234"
+  },
+  {
+    "title": "Im not that kind of talent",
+    "chapter": 17,
+    "link": "https://www.asurascans.com/1672760368-im-not-that-kind-of-talent-chapter-1/",
+    "lastReadDate": "",
+    "status": "plan-to-read",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_235"
+  },
+  {
+    "title": "heavenly demon instructor",
+    "chapter": 23,
+    "link": "https://www.asurascans.com/comics/heavenly-demon-instructor/",
+    "lastReadDate": "",
+    "status": "plan-to-read",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_236"
+  },
+  {
+    "title": "The regress or instruction manual",
+    "chapter": 24,
+    "link": "https://www.asurascans.com/comics/regressor-instruction-manual/",
+    "lastReadDate": "",
+    "status": "plan-to-read",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_237"
+  },
+  {
+    "title": "The S-Classes That I Raised",
+    "chapter": 9,
+    "link": "https://www.asurascans.com/comics/the-s-classes-that-i-raised/",
+    "lastReadDate": "",
+    "status": "plan-to-read",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_238"
+  },
+  {
+    "title": "Return of the unrivaled spear knight",
+    "chapter": 26,
+    "link": "https://www.asurascans.com/comics/return-of-the-unrivaled-spear-knight/",
+    "lastReadDate": "",
+    "status": "plan-to-read",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_239"
+  },
+  {
+    "title": "Demonic spirit king",
+    "chapter": 14,
+    "link": "https://www.asurascans.com/comics/demonic-spirit-king/",
+    "lastReadDate": "",
+    "status": "plan-to-read",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_240"
+  },
+  {
+    "title": "Starting today im a player",
+    "chapter": 28,
+    "link": "https://www.asurascans.com/comics/starting-today-im-a-player/",
+    "lastReadDate": "",
+    "status": "plan-to-read",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_241"
+  },
+  {
+    "title": "Your talent is mine",
+    "chapter": 15,
+    "link": "https://www.asurascans.com/comics/your-talent-is-mine/",
+    "lastReadDate": "",
+    "status": "plan-to-read",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_242"
+  },
+  {
+    "title": "My path to killing gods in another world",
+    "chapter": 28,
+    "link": "https://www.asurascans.com/comics/my-path-to-killing-gods-in-another-world/",
+    "lastReadDate": "",
+    "status": "plan-to-read",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_243"
+  },
+  {
+    "title": "Rise from the rubble",
+    "chapter": 59,
+    "link": "https://www.asurascans.com/comics/rise-from-the-rubble/",
+    "lastReadDate": "",
+    "status": "plan-to-read",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_244"
+  },
+  {
+    "title": "Death is the only ending for the villainess",
+    "chapter": 27,
+    "link": "https://www.asurascans.com/comics/death-is-the-only-ending-for-the-villainess/",
+    "lastReadDate": "",
+    "status": "plan-to-read",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_245"
+  },
+  {
+    "title": "The strongest player",
+    "chapter": 3,
+    "link": "https://www.asurascans.com/comics/the-strongest-player/",
+    "lastReadDate": "",
+    "status": "plan-to-read",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_246"
+  },
+  {
+    "title": "Heavenly martial god",
+    "chapter": 31,
+    "link": "https://www.asurascans.com/comics/heavenly-martial-god/",
+    "lastReadDate": "",
+    "status": "plan-to-read",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_247"
+  },
+  {
+    "title": "Maxed out leveling",
+    "chapter": 24,
+    "link": "https://www.asurascans.com/comics/maxed-out-leveling/",
+    "lastReadDate": "",
+    "status": "plan-to-read",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_248"
+  },
+  {
+    "title": "Solo bug player",
+    "chapter": 80,
+    "link": "https://www.asurascans.com/comics/11-solo-bug-player/",
+    "lastReadDate": "",
+    "status": "plan-to-read",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_249"
+  },
+  {
+    "title": "Max level returner",
+    "chapter": 120,
+    "link": "https://www.asurascans.com/1-max-level-returner-chapter-0/",
+    "lastReadDate": "",
+    "status": "plan-to-read",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_250"
+  },
+  {
+    "title": "Super evolution",
+    "chapter": 27,
+    "link": "https://www.asurascans.com/comics/super-evolution/",
+    "lastReadDate": "",
+    "status": "plan-to-read",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_251"
+  },
+  {
+    "title": "Above the heavens",
+    "chapter": 11,
+    "link": "https://www.asurascans.com/comics/above-the-heavens/",
+    "lastReadDate": "",
+    "status": "plan-to-read",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_252"
+  },
+  {
+    "title": "The world after the end",
+    "chapter": 9,
+    "link": "https://www.asurascans.com/comics/the-world-after-the-end/",
+    "lastReadDate": "",
+    "status": "plan-to-read",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_253"
+  },
+  {
+    "title": "Instant danger",
+    "chapter": 9,
+    "link": "https://manhuascan.com/read-instant-regret-chapter-1.html",
+    "lastReadDate": "",
+    "status": "plan-to-read",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_254"
   }
 ];
 
 // Initialize application data
 function initApp() {
-  const storedData = localStorage.getItem('luxe_manhwa_tracker_data_v4');
+  const storedData = localStorage.getItem('luxe_manhwa_tracker_data_v5');
   if (storedData) {
     try {
       manhwas = JSON.parse(storedData);
@@ -2339,7 +2589,7 @@ function initApp() {
 }
 
 function saveData() {
-  localStorage.setItem('luxe_manhwa_tracker_data_v4', JSON.stringify(manhwas));
+  localStorage.setItem('luxe_manhwa_tracker_data_v5', JSON.stringify(manhwas));
 }
 
 // Helper to get today's date formatted as YYYY-MM-DD
@@ -2430,6 +2680,21 @@ function incrementChapter(id) {
       return {
         ...m,
         chapter: (m.chapter || 0) + 1,
+        lastReadDate: getTodayString()
+      };
+    }
+    return m;
+  });
+  saveData();
+  render();
+}
+
+function startReadingManhwa(id) {
+  manhwas = manhwas.map(m => {
+    if (m.id === id) {
+      return {
+        ...m,
+        status: 'reading',
         lastReadDate: getTodayString()
       };
     }
@@ -2637,7 +2902,7 @@ function render() {
 
           <div class="card-body">
             <div class="detail-row">
-              <span class="detail-label">Current Chapter</span>
+              <span class="detail-label">${m.status === 'plan-to-read' ? 'Released Chapters' : 'Current Chapter'}</span>
               <span class="detail-value">Ch. ${m.chapter || 0}</span>
             </div>
             
@@ -2661,10 +2926,12 @@ function render() {
               </span>
             </div>
 
-            <div class="detail-row">
-              <span class="detail-label">Last Read</span>
-              <span class="detail-value" title="${m.lastReadDate || ''}">${formattedDate}</span>
-            </div>
+            ${m.status !== 'plan-to-read' ? `
+              <div class="detail-row">
+                <span class="detail-label">Last Read</span>
+                <span class="detail-value" title="${m.lastReadDate || ''}">${formattedDate}</span>
+              </div>
+            ` : ''}
 
             ${m.notes ? `<p class="card-notes">${escapeHTML(m.notes)}</p>` : ''}
           </div>
@@ -2683,7 +2950,11 @@ function render() {
               ${m.link ? `
                 <button class="quick-add-btn toggle-link-status-btn" title="Toggle broken flag manually">Flag Link</button>
               ` : ''}
-              <button class="quick-add-btn plus-one-btn">+1 Chapter</button>
+              ${m.status === 'plan-to-read' ? `
+                <button class="quick-add-btn start-reading-btn">Start Reading</button>
+              ` : `
+                <button class="quick-add-btn plus-one-btn">+1 Chapter</button>
+              `}
             </div>
           </div>
         </div>
@@ -2700,6 +2971,12 @@ function updateStats() {
   
   const readingCount = manhwas.filter(m => m.status === 'reading').length;
   document.getElementById('stat-reading').textContent = readingCount;
+
+  const planToReadCount = manhwas.filter(m => m.status === 'plan-to-read').length;
+  const planToReadEl = document.getElementById('stat-plan-to-read');
+  if (planToReadEl) {
+    planToReadEl.textContent = planToReadCount;
+  }
   
   // Find latest active date
   let latestDate = null;
@@ -2736,24 +3013,41 @@ const modal = document.getElementById('manhwa-modal');
 const modalTitle = document.getElementById('modal-title');
 const manhwaForm = document.getElementById('manhwa-form');
 
+function updateModalFormFields(status) {
+  const dateGroup = document.getElementById('form-group-date');
+  const chapterLabel = document.getElementById('form-label-chapter');
+  
+  if (status === 'plan-to-read') {
+    if (dateGroup) dateGroup.style.display = 'none';
+    if (chapterLabel) chapterLabel.textContent = 'Released Chapters';
+  } else {
+    if (dateGroup) dateGroup.style.display = 'block';
+    if (chapterLabel) chapterLabel.textContent = 'Current Chapter';
+  }
+}
+
 function openModal(title, mode = 'add', data = null) {
   modalTitle.textContent = title;
   modal.classList.add('active');
   modal.setAttribute('aria-hidden', 'false');
   document.body.style.overflow = 'hidden'; // Lock background scrolling
   
+  const statusSelect = document.getElementById('input-status');
   if (mode === 'edit' && data) {
     document.getElementById('manhwa-id').value = data.id;
     document.getElementById('input-title').value = data.title;
     document.getElementById('input-chapter').value = data.chapter;
-    document.getElementById('input-status').value = data.status;
+    statusSelect.value = data.status;
     document.getElementById('input-link').value = data.link;
     document.getElementById('input-date').value = data.lastReadDate || getTodayString();
     document.getElementById('input-notes').value = data.notes || '';
+    updateModalFormFields(data.status);
   } else {
     manhwaForm.reset();
     document.getElementById('manhwa-id').value = '';
     document.getElementById('input-date').value = getTodayString();
+    statusSelect.value = 'reading';
+    updateModalFormFields('reading');
   }
   document.getElementById('input-title').focus();
 }
@@ -2772,6 +3066,15 @@ function attachCardListeners() {
       const card = e.target.closest('.manhwa-card');
       const id = card.getAttribute('data-id');
       incrementChapter(id);
+    });
+  });
+
+  // Start Reading Button
+  document.querySelectorAll('.start-reading-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const card = e.target.closest('.manhwa-card');
+      const id = card.getAttribute('data-id');
+      startReadingManhwa(id);
     });
   });
 
@@ -2885,6 +3188,14 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('luxe_manhwa_tracker_view', 'list');
         render();
       }
+    });
+  }
+
+  // Modal input status change handler
+  const inputStatus = document.getElementById('input-status');
+  if (inputStatus) {
+    inputStatus.addEventListener('change', (e) => {
+      updateModalFormFields(e.target.value);
     });
   }
 });
