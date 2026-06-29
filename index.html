@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luxe Manhwa Tracker</title>
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="A premium, minimalistic reader tracker for tracking Manhwa reading progress, chapters, and dates.">
+  <meta name="author" content="Daniel Lee">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- App Container -->
+  <div class="app-container">
+    
+    <!-- Header -->
+    <header class="header">
+      <div class="brand">
+        <h1 id="app-title">LUXE NOIR</h1>
+        <p class="subtitle">Reading Tracker</p>
+      </div>
+      <div class="header-actions">
+        <button id="add-manhwa-btn" class="btn btn-primary" aria-label="Add New Manhwa">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          Add Manhwa
+        </button>
+      </div>
+    </header>
+
+    <!-- Stats Dashboard -->
+    <section class="stats-dashboard" id="stats-panel">
+      <div class="stat-card">
+        <span class="stat-label">Total Tracked</span>
+        <span class="stat-value" id="stat-total">0</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-card">
+        <span class="stat-label">Currently Reading</span>
+        <span class="stat-value" id="stat-reading">0</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-card">
+        <span class="stat-label">Last Active</span>
+        <span class="stat-value" id="stat-last-active">—</span>
+      </div>
+    </section>
+
+    <!-- Control Bar (Filter / Sort / Search) -->
+    <section class="control-bar">
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="search-input" placeholder="Search manhwa..." aria-label="Search manhwa">
+      </div>
+      
+      <div class="filter-sort-controls">
+        <div class="select-wrapper">
+          <select id="filter-status" aria-label="Filter by Status">
+            <option value="all">All Statuses</option>
+            <option value="reading">Reading</option>
+            <option value="completed">Completed</option>
+            <option value="on-hold">On Hold</option>
+          </select>
+        </div>
+
+        <div class="select-wrapper">
+          <select id="sort-by" aria-label="Sort by">
+            <option value="latest-read">Latest Read</option>
+            <option value="alphabetical">Title (A-Z)</option>
+            <option value="chapters-count">Chapters Read</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Empty State -->
+      <div id="empty-state" class="empty-state">
+        <div class="empty-illustration">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="empty-icon">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+        </div>
+        <h3>No manhwas tracked yet</h3>
+        <p>Start your reading list by adding a new manhwa.</p>
+        <button id="empty-add-btn" class="btn btn-secondary">Add Your First Manhwa</button>
+      </div>
+
+      <!-- Grid Container -->
+      <div id="manhwa-grid" class="manhwa-grid hidden">
+        <!-- Manhwa cards will be injected here dynamically -->
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>&copy; 2026 Luxe Noir. All rights reserved.</p>
+    </footer>
+
+  </div>
+
+  <!-- Modal: Add / Edit Manhwa -->
+  <div id="manhwa-modal" class="modal" aria-hidden="true" role="dialog">
+    <div class="modal-overlay" id="modal-overlay"></div>
+    <div class="modal-content">
+      <button id="modal-close" class="modal-close-btn" aria-label="Close modal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <h2 id="modal-title">Add New Manhwa</h2>
+      
+      <form id="manhwa-form">
+        <!-- Hidden input for ID (edit mode) -->
+        <input type="hidden" id="manhwa-id">
+
+        <div class="form-group">
+          <label for="input-title">Title *</label>
+          <input type="text" id="input-title" required placeholder="e.g., Solo Leveling">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="input-chapter">Current Chapter</label>
+            <input type="number" id="input-chapter" min="0" value="1" placeholder="e.g., 42">
+          </div>
+          <div class="form-group flex-2">
+            <label for="input-status">Status</label>
+            <div class="select-wrapper">
+              <select id="input-status">
+                <option value="reading">Reading</option>
+                <option value="completed">Completed</option>
+                <option value="on-hold">On Hold</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="input-link">Chapter Link</label>
+          <input type="url" id="input-link" placeholder="https://example.com/chapter-1">
+          <small class="form-help">Link to the website where you read this chapter.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="input-date">Last Read Date</label>
+          <input type="date" id="input-date">
+        </div>
+
+        <div class="form-group">
+          <label for="input-notes">Notes</label>
+          <textarea id="input-notes" rows="3" placeholder="Brief notes about the manhwa or where you left off..."></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" id="form-cancel" class="btn btn-tertiary">Cancel</button>
+          <button type="submit" id="form-submit" class="btn btn-primary">Save Manhwa</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>
