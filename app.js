@@ -205,16 +205,6 @@ const MOCK_DATA = [
   },
   {
     "id": "manhwa_20",
-    "title": "Berserk of gluttony",
-    "chapter": 51,
-    "link": "https://ww4.mangakakalot.tv/chapter/manga-be979161/chapter-51",
-    "lastReadDate": "2023-01-04",
-    "status": "reading",
-    "notes": "",
-    "linkStatus": "active"
-  },
-  {
-    "id": "manhwa_21",
     "title": "My companion is the strongest undead",
     "chapter": 20,
     "link": "https://platinumscans.com/manga/my-companion-is-the-strongest-undead-in-another-world/chapter-20/",
@@ -224,7 +214,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_22",
+    "id": "manhwa_21",
     "title": "A returners magic should be special",
     "chapter": 219,
     "link": "https://areturnermagic.com/manga/a-returners-magic-should-be-special-chapter-219/",
@@ -234,7 +224,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_23",
+    "id": "manhwa_22",
     "title": "summoned to a parallel fantasy world many times",
     "chapter": 25,
     "link": "https://void-scans.com/summoned-to-a-parallel-fantasy-world-many-times-chapter-25/",
@@ -244,7 +234,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_24",
+    "id": "manhwa_23",
     "title": "Gods part time employee",
     "chapter": 27,
     "link": "https://aquamanga.com/read/i-became-a-part-time-employee-for-gods/chapter-27/",
@@ -254,7 +244,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_25",
+    "id": "manhwa_24",
     "title": "Reincarnated as a slime",
     "chapter": 104,
     "link": "https://www.tenseislime.com/manga/tensei-shitara-slime-datta-ken-chapter-104/",
@@ -264,7 +254,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_26",
+    "id": "manhwa_25",
     "title": "Overlord",
     "chapter": 71,
     "link": "https://overlord-read.online/overlord-chapter-71/",
@@ -274,7 +264,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_27",
+    "id": "manhwa_26",
     "title": "In a party with a dragon",
     "chapter": 12,
     "link": "https://mangakakalot.com/chapter/a_story_about_a_dragon_and_the_rising_of_an_adventurer/chapter_12",
@@ -284,7 +274,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_28",
+    "id": "manhwa_27",
     "title": "Legend of the northern blade",
     "chapter": 156,
     "link": "https://en.leviatanscans.com/manga/legend-of-the-northern-blade/chapter-156/",
@@ -294,7 +284,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_29",
+    "id": "manhwa_28",
     "title": "Tougen Anki",
     "chapter": 147,
     "link": "https://mangakakalot.com/chapter/ym923759/chapter_147",
@@ -304,7 +294,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_30",
+    "id": "manhwa_29",
     "title": "Tenkaichi",
     "chapter": 28,
     "link": "https://chapmanganelo.com/manga-mj127555/chapter-28",
@@ -314,7 +304,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_31",
+    "id": "manhwa_30",
     "title": "Nito no Taidana Isekai Shoukougun",
     "chapter": 30.2,
     "link": "https://mangaclash.com/manga/nito-no-taidana-isekai-shoukougun-saijaku-shoku/chapter-30-2/",
@@ -324,7 +314,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_32",
+    "id": "manhwa_31",
     "title": "Rainbow class hunter",
     "chapter": 31,
     "link": "https://www.topmanhua.com/manhua/savior-of-divine-blood-draw-out-0-00000001-to-become-the-strongest/chapter-31/",
@@ -334,7 +324,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_33",
+    "id": "manhwa_32",
     "title": "Rebuild world",
     "chapter": 28,
     "link": "https://ww5.mangakakalot.tv/chapter/manga-fd982686/chapter-28",
@@ -344,7 +334,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_34",
+    "id": "manhwa_33",
     "title": "Skeleton soldier",
     "chapter": 246,
     "link": "https://luminousscans.com/skeleton-soldier-couldnt-protect-the-dungeon-chapter-246/",
@@ -354,17 +344,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_35",
-    "title": "Nito no Taidana Isekai Shoukougun",
-    "chapter": 0,
-    "link": "https://mangaclash.com/manga/nito-no-taidana-isekai-shoukougun-saijaku-shoku/chapter-30-2/",
-    "lastReadDate": "2023-09-30",
-    "status": "reading",
-    "notes": "",
-    "linkStatus": "active"
-  },
-  {
-    "id": "manhwa_36",
+    "id": "manhwa_34",
     "title": "Country of magicians",
     "chapter": 1,
     "link": "https://ww6.mangakakalot.tv/chapter/manga-dh980390/chapter-1",
@@ -374,7 +354,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_37",
+    "id": "manhwa_35",
     "title": "Lili men",
     "chapter": 13,
     "link": "https://mangakakalot.com/chapter/tg930319/chapter_13",
@@ -384,7 +364,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_38",
+    "id": "manhwa_36",
     "title": "Hand over the money!",
     "chapter": 20,
     "link": "https://void-scans.com/1/hand-over-the-money-chapter-20/",
@@ -394,7 +374,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_39",
+    "id": "manhwa_37",
     "title": "Mashle (muscle magic)",
     "chapter": 163,
     "link": "https://mashle-manga.online/manga/mashle-magic-and-muscles-chapter-163/",
@@ -404,7 +384,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_40",
+    "id": "manhwa_38",
     "title": "Kaiju #8",
     "chapter": 99,
     "link": "https://kaiju-no8.com/manga/kaiju-no-8-chapter-99/",
@@ -414,7 +394,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_41",
+    "id": "manhwa_39",
     "title": "Tower of God",
     "chapter": 588,
     "link": "https://www.webtoons.com/en/fantasy/tower-of-god/season-3-ep-171/viewer?title_no=95&episode_no=589",
@@ -424,7 +404,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_42",
+    "id": "manhwa_40",
     "title": "shikimoris not just a cutie",
     "chapter": 151,
     "link": "https://mangakakalot.to/read/shikimoris-not-just-a-cutie-1358/en/chapter-151",
@@ -434,7 +414,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_43",
+    "id": "manhwa_41",
     "title": "Blue giant",
     "chapter": 80,
     "link": "https://ww7.manganelo.tv/chapter/manga-se970261/chapter-80",
@@ -444,7 +424,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_44",
+    "id": "manhwa_42",
     "title": "Primal gods",
     "chapter": 26.5,
     "link": "https://chapmanganelo.com/manga-fm120532/chapter-26.5",
@@ -454,7 +434,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_45",
+    "id": "manhwa_43",
     "title": "FFF- class Trashhero",
     "chapter": 172,
     "link": "https://fffclasstrashero.com/manga/941-fff-class-trashero-chapter-172/",
@@ -464,7 +444,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_46",
+    "id": "manhwa_44",
     "title": "Fight class",
     "chapter": 93,
     "link": "https://ww8.mangakakalot.tv/chapter/manga-cd980038/chapter-93",
@@ -474,7 +454,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_47",
+    "id": "manhwa_45",
     "title": "Academys undercover professor",
     "chapter": 93,
     "link": "https://academysundercoverprofessor.com/manga/academys-undercover-professor-chapter-93/",
@@ -484,7 +464,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_48",
+    "id": "manhwa_46",
     "title": "Reformation of the dead beat noble",
     "chapter": 106,
     "link": "https://w3.reformationofthedeadbeat.com/manga/99499-the-lazy-prince-becomes-a-genius-chapter-106/",
@@ -494,7 +474,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_49",
+    "id": "manhwa_47",
     "title": "The black mage who reincarnated after 6666 years",
     "chapter": 114,
     "link": "https://darkmagiciantransmigrate.com/manga/the-dark-magician-transmigrates-after-66666-years-chapter-114/",
@@ -504,7 +484,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_50",
+    "id": "manhwa_48",
     "title": "Mr devourer",
     "chapter": 41,
     "link": "https://mrdevourerpleaseactlikeafinalboss.com/manga/mr-devourer-please-act-like-a-final-boss-chapter-41/",
@@ -514,7 +494,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_51",
+    "id": "manhwa_49",
     "title": "death tube",
     "chapter": 98,
     "link": "https://ww8.mangakakalot.tv/chapter/manga-pp951398/chapter-98",
@@ -524,7 +504,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_52",
+    "id": "manhwa_50",
     "title": "pumpkin night",
     "chapter": 109,
     "link": "https://pumpkin-night.com/manga/pumpkin-night-chapter-109/",
@@ -534,7 +514,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_53",
+    "id": "manhwa_51",
     "title": "Ruri dragon",
     "chapter": 14,
     "link": "https://chapmanganelo.com/manga-oh128627/chapter-14",
@@ -544,7 +524,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_54",
+    "id": "manhwa_52",
     "title": "dandadan",
     "chapter": 156,
     "link": "https://dandadan.net/manga/dandadan-chapter-156/",
@@ -554,7 +534,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_55",
+    "id": "manhwa_53",
     "title": "Reincarnator",
     "chapter": 33,
     "link": "https://reincarnator.com/manga/reincarnator-chapter-33/",
@@ -564,7 +544,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_56",
+    "id": "manhwa_54",
     "title": "Dear anemone",
     "chapter": 13,
     "link": "https://chapmanganelo.com/manga-xs138212/chapter-13",
@@ -574,7 +554,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_57",
+    "id": "manhwa_55",
     "title": "I returned as an FFF-Class witch doctor",
     "chapter": 74,
     "link": "https://manhuaus.com/manga/i-returned-as-an-fff-class-witch-doctor/chapter-74/",
@@ -584,7 +564,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_58",
+    "id": "manhwa_56",
     "title": "I regressed to my ruined family",
     "chapter": 89,
     "link": "https://manhuaus.org/manga/i-regressed-to-my-ruined-family/chapter-89/",
@@ -594,7 +574,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_59",
+    "id": "manhwa_57",
     "title": "Standard of reincarnation",
     "chapter": 98,
     "link": "https://manhwaclan.com/manga/standard-of-reincarnation/chapter-98/",
@@ -604,7 +584,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_60",
+    "id": "manhwa_58",
     "title": "Mikadono sanshimawi (3 sisters + yuu)",
     "chapter": 118,
     "link": "https://chapmanganelo.com/manga-nz128519/chapter-118",
@@ -614,7 +594,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_61",
+    "id": "manhwa_59",
     "title": "Jujutsu kaisen",
     "chapter": 266,
     "link": "https://w7.jujustu-kaisen.com/manga/jujutsu-kaisen-chapter-266/",
@@ -624,7 +604,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_62",
+    "id": "manhwa_60",
     "title": "The heavenly demon cant live a normal life",
     "chapter": 117,
     "link": "https://heavenlydemoncantliveanormallife.com/manga/97353-the-heavenly-demon-cant-live-a-normal-life-chapter-117/",
@@ -634,7 +614,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_63",
+    "id": "manhwa_61",
     "title": "I killed an academy player",
     "chapter": 48,
     "link": "https://ikilledacademyplayer.com/manga/i-killed-an-academy-player-chapter-48/",
@@ -644,7 +624,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_64",
+    "id": "manhwa_62",
     "title": "Berserk",
     "chapter": 376,
     "link": "https://readberserk.com/chapter/berserk-chapter-376/",
@@ -654,7 +634,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_65",
+    "id": "manhwa_63",
     "title": "Second Life Ranker",
     "chapter": 183,
     "link": "https://w29.secondliferanker.com/second-life-ranker-manga-chapter-183/",
@@ -664,7 +644,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_66",
+    "id": "manhwa_64",
     "title": "survival story of the sword king",
     "chapter": 222,
     "link": "https://w62.swordkingstory.com/survival-story-of-a-sword-king-in-a-fantasy-world-chapter-222/",
@@ -674,7 +654,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_67",
+    "id": "manhwa_65",
     "title": "Player",
     "chapter": 224,
     "link": "https://www.mgeko.cc/reader/en/player-mg1-chapter-224-eng-li/",
@@ -684,7 +664,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_68",
+    "id": "manhwa_66",
     "title": "The world after the fall",
     "chapter": 147,
     "link": "https://w1.theworldafterfall.com/manga/the-world-after-the-fall-chapter-147/?date=2024-10-02",
@@ -694,7 +674,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_69",
+    "id": "manhwa_67",
     "title": "Furitsumore Kodoku na Shi yo (murder mystery)",
     "chapter": 26,
     "link": "https://mangakakalot.com/chapter/on932442/chapter_26",
@@ -704,7 +684,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_70",
+    "id": "manhwa_68",
     "title": "Talent swallowing magician",
     "chapter": 94,
     "link": "https://talentswallowingmagician.com/manga/talent-swallowing-magician-chapter-94/",
@@ -714,7 +694,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_71",
+    "id": "manhwa_69",
     "title": "Blacksmith zig",
     "chapter": 63,
     "link": "https://mangadex.org/chapter/6615229a-14cd-42e7-9f66-50db78cacdec/1",
@@ -724,7 +704,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_72",
+    "id": "manhwa_70",
     "title": "Evolution road to space monster",
     "chapter": 58,
     "link": "https://chapmanganato.to/manga-uh998064/chapter-58",
@@ -734,7 +714,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_73",
+    "id": "manhwa_71",
     "title": "Goblin\u2019s night",
     "chapter": 76,
     "link": "https://goblinsnight.com/manga/goblins-night-chapter-76/",
@@ -744,7 +724,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_74",
+    "id": "manhwa_72",
     "title": "Kai-hen wizard",
     "chapter": 13,
     "link": "https://bato.ing/title/167764-en-kai-hen-wizards-official/3120013-ch_13",
@@ -754,7 +734,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_75",
+    "id": "manhwa_73",
     "title": "The beginning after the end",
     "chapter": 193,
     "link": "https://thebeginningaftertheend.mangaseen.com/manga/the-beginning-after-the-end-manga-chapter-193/",
@@ -764,7 +744,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_76",
+    "id": "manhwa_74",
     "title": "Magic academy\u2019s genius blinker",
     "chapter": 47,
     "link": "https://www.toongod.org/webtoon/magic-academys-genius-blinker/chapter-47/",
@@ -774,7 +754,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_77",
+    "id": "manhwa_75",
     "title": "Necromancer academy and the genie summoner",
     "chapter": 151,
     "link": "https://necromanceracademy.online/manga/necromancer-academy-and-the-genius-summoner-chapter-151/",
@@ -784,7 +764,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_78",
+    "id": "manhwa_76",
     "title": "Forget my husband ill go make money",
     "chapter": 83,
     "link": "https://mangadex.org/chapter/9742b834-5508-48c5-b49e-eeb80a4abeff/1",
@@ -794,7 +774,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_79",
+    "id": "manhwa_77",
     "title": "Kaoru Hana wa Rin to Saku",
     "chapter": 136,
     "link": "https://kaoruhanawarintosaku.com/manga/99580-kaoru-hana-wa-rin-to-saku-chapter-136/",
@@ -804,7 +784,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_80",
+    "id": "manhwa_78",
     "title": "Blue Box",
     "chapter": 181,
     "link": "https://blue-box-manga.online/manga/blue-box-chapter-182/",
@@ -814,7 +794,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_81",
+    "id": "manhwa_79",
     "title": "Trancension academy",
     "chapter": 61,
     "link": "https://transcensionacademy.top/manga/transcension-academy-chapter-061/",
@@ -824,7 +804,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_82",
+    "id": "manhwa_80",
     "title": "The indomitable martial king",
     "chapter": 70,
     "link": "https://theindomitablemartialking.org/manga/the-indomitable-martial-king-chapter-70/",
@@ -834,7 +814,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_83",
+    "id": "manhwa_81",
     "title": "The max level player\u2019s 100th regression",
     "chapter": 46,
     "link": "https://w1.100regression.com/the-max-level-players-100th-regression-chapter-46/",
@@ -844,7 +824,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_84",
+    "id": "manhwa_82",
     "title": "Star embracing swords master",
     "chapter": 80,
     "link": "https://starembracingswordmaster.com/manga/star-embracing-swordmaster-chapter-80/",
@@ -854,7 +834,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_85",
+    "id": "manhwa_83",
     "title": "baek xx",
     "chapter": 124,
     "link": "https://hivecomic.com/series/baek-xx/chapter-124",
@@ -864,7 +844,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_86",
+    "id": "manhwa_84",
     "title": "Phantom buster",
     "chapter": 45,
     "link": "https://mangadex.org/chapter/7b730787-905c-4442-b445-0cb13dedac04/45",
@@ -874,7 +854,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_87",
+    "id": "manhwa_85",
     "title": "Record of ragnorok",
     "chapter": 104,
     "link": "https://record-ragnarok.com/manga/record-of-ragnarok-chapter-102/",
@@ -884,7 +864,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_88",
+    "id": "manhwa_86",
     "title": "Juujika no rokunin",
     "chapter": 208,
     "link": "https://w13.juujikano-rokunin.com/manga/juujika-no-rokunin-chapter-208/",
@@ -894,7 +874,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_89",
+    "id": "manhwa_87",
     "title": "the way to meet mom",
     "chapter": 26,
     "link": "https://mangadex.org/title/8b8102da-c875-4dae-a79c-c62e817ff3f5/on-the-way-to-meet-mom",
@@ -904,7 +884,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_90",
+    "id": "manhwa_88",
     "title": "Absolute regression",
     "chapter": 47,
     "link": "https://asuracomic.net/series/absolute-regression-d292765e/chapter/47",
@@ -914,7 +894,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_91",
+    "id": "manhwa_89",
     "title": "Grand blue",
     "chapter": 102,
     "link": "https://xbato.com/title/86663-grand-blue-dreaming-official/3327669-ch_102",
@@ -924,7 +904,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_92",
+    "id": "manhwa_90",
     "title": "Warrior high school",
     "chapter": 0,
     "link": "https://www.toongod.org/webtoon/warrior-high-school-dungeon-raid-department/chapter-45/",
@@ -934,7 +914,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_93",
+    "id": "manhwa_91",
     "title": "Day walker",
     "chapter": 45,
     "link": "https://www.mgeko.cc/reader/en/daywalker-chapter-45-eng-li/",
@@ -944,7 +924,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_94",
+    "id": "manhwa_92",
     "title": "eleceed",
     "chapter": 368,
     "link": "https://manhwabuddy.com/manhwa/eleceed/chapter-368/",
@@ -954,7 +934,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_95",
+    "id": "manhwa_93",
     "title": "Regressing as the reincarnated bastard of the sword clan",
     "chapter": 71,
     "link": "https://vortexscans.org/series/regressing-as-the-reincarnated-bastard/chapter-71",
@@ -964,7 +944,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_96",
+    "id": "manhwa_94",
     "title": "Bad born blood",
     "chapter": 72,
     "link": "https://asuracomic.net/series/bad-born-blood-50643aa2/chapter/72",
@@ -974,17 +954,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_97",
-    "title": "Magic academy\u2019s genius blinker",
-    "chapter": 86,
-    "link": "https://asuracomic.net/series/magic-academys-genius-blinker-46c578e9/chapter/86",
-    "lastReadDate": "2026-02-14",
-    "status": "reading",
-    "notes": "",
-    "linkStatus": "active"
-  },
-  {
-    "id": "manhwa_98",
+    "id": "manhwa_95",
     "title": "Star embracing sword master",
     "chapter": 109,
     "link": "https://asuracomic.net/series/star-embracing-swordmaster-769bc194/chapter/109",
@@ -994,7 +964,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_99",
+    "id": "manhwa_96",
     "title": "Jujutsu kaisen module",
     "chapter": 23,
     "link": "https://jujutsumodulo.com/chapter/23/",
@@ -1004,7 +974,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_100",
+    "id": "manhwa_97",
     "title": "Level 999 goblin",
     "chapter": 41,
     "link": "https://asuracomic.net/series/level-999-goblin-60985c3e/chapter/41",
@@ -1014,7 +984,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_101",
+    "id": "manhwa_98",
     "title": "Reaper of the drifting moon",
     "chapter": 128,
     "link": "https://asuracomic.net/series/reaper-of-the-drifting-moon-2a3ea549/chapter/128",
@@ -1024,7 +994,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_102",
+    "id": "manhwa_99",
     "title": "Dragon devouring mage",
     "chapter": 136,
     "link": "https://asuracomic.net/series/dragon-devouring-mage-6c596642/chapter/136",
@@ -1034,7 +1004,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_103",
+    "id": "manhwa_100",
     "title": "The player hides his past",
     "chapter": 111,
     "link": "https://asuracomic.net/series/the-player-hides-his-past-e4e26939/chapter/111",
@@ -1044,7 +1014,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_104",
+    "id": "manhwa_101",
     "title": "Childhood friend of the zenith",
     "chapter": 97,
     "link": "https://www.toongod.org/webtoon/childhood-friend-of-the-zenith/chapter-97/",
@@ -1054,7 +1024,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_105",
+    "id": "manhwa_102",
     "title": "Priest of corruption",
     "chapter": 79,
     "link": "https://asurascans.com/comics/the-priest-of-corruption-75e30c62/chapter/79",
@@ -1064,7 +1034,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_106",
+    "id": "manhwa_103",
     "title": "Dungeon odyssey",
     "chapter": 155,
     "link": "https://asurascans.com/comics/dungeon-odyssey-75e30c62/chapter/155",
@@ -1074,7 +1044,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_107",
+    "id": "manhwa_104",
     "title": "The dark mage\u2019s return to enlistment",
     "chapter": 84,
     "link": "https://asurascans.com/comics/the-dark-mages-return-to-enlistment-0984835a/chapter/85",
@@ -1084,7 +1054,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_108",
+    "id": "manhwa_105",
     "title": "Cosmic heavenly demon 3077",
     "chapter": 87,
     "link": "https://mangadex.org/chapter/74660d1b-fb17-467f-aed7-d48e445101e8/1",
@@ -1094,17 +1064,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_109",
-    "title": "Absolute regression",
-    "chapter": 107,
-    "link": "https://asurascans.com/comics/absolute-regression-fc4c7eba/chapter/107",
-    "lastReadDate": "2026-06-29",
-    "status": "reading",
-    "notes": "",
-    "linkStatus": "active"
-  },
-  {
-    "id": "manhwa_110",
+    "id": "manhwa_106",
     "title": "What a bountiful harvest, Demon Lord!",
     "chapter": 73,
     "link": "https://asurascans.com/comics/what-a-bountiful-harvest-demon-lord-fc4c7eba/chapter/73",
@@ -1114,7 +1074,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_111",
+    "id": "manhwa_107",
     "title": "Evolution begins with a big tree",
     "chapter": 516,
     "link": "https://arenascan.com/evolution-begins-with-a-big-tree-chapter-516/",
@@ -1124,7 +1084,7 @@ const MOCK_DATA = [
     "linkStatus": "active"
   },
   {
-    "id": "manhwa_112",
+    "id": "manhwa_108",
     "title": "Tang chronicles",
     "chapter": 49,
     "link": "https://asurascans.com/comics/the-tang-clan-chronicles-fc4c7eba/chapter/49",
@@ -1132,12 +1092,1222 @@ const MOCK_DATA = [
     "status": "reading",
     "notes": "",
     "linkStatus": "active"
+  },
+  {
+    "title": "Berserk quest",
+    "chapter": 0,
+    "link": "",
+    "lastReadDate": "2022-01-01",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "unknown",
+    "id": "manhwa_109"
+  },
+  {
+    "title": "Mookhyang the origin",
+    "chapter": 47,
+    "link": "https://www.asurascans.com/mookhyang-the-origin-chapter-47/",
+    "lastReadDate": "2022-01-02",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_110"
+  },
+  {
+    "title": "Spirit farmer",
+    "chapter": 74,
+    "link": "https://www.asurascans.com/spirit-farmer-chapter-74/",
+    "lastReadDate": "2022-01-03",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_111"
+  },
+  {
+    "title": "Solo spell caster",
+    "chapter": 71,
+    "link": "https://www.asurascans.com/solo-spell-caster-chapter-71/",
+    "lastReadDate": "2022-01-04",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_112"
+  },
+  {
+    "title": "Wandering warrior of Wudang",
+    "chapter": 58,
+    "link": "https://www.asurascans.com/wandering-warrior-of-wudang-chapter-58/",
+    "lastReadDate": "2022-01-05",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_113"
+  },
+  {
+    "title": "King of bugs",
+    "chapter": 28,
+    "link": "https://www.asurascans.com/the-king-of-bugs-chapter-28/",
+    "lastReadDate": "2022-01-06",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_114"
+  },
+  {
+    "title": "Return of the ` constellation",
+    "chapter": 20,
+    "link": "https://www.asurascans.com/return-of-the-shattered-constellation-chapter-20/",
+    "lastReadDate": "2022-01-07",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_115"
+  },
+  {
+    "title": "Damn reincarnation",
+    "chapter": 81,
+    "link": "https://reaperscans.com/comics/6887-damn-reincarnation/chapters/30550051-chapter-81",
+    "lastReadDate": "2022-01-14",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_116"
+  },
+  {
+    "title": "Revenge of the iron blooded sword hound",
+    "chapter": 95,
+    "link": "https://asuracomic.net/series/revenge-of-the-iron-blooded-sword-hound-4088ab84/chapter/95",
+    "lastReadDate": "2022-01-14",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_117"
+  },
+  {
+    "title": "Wandering warrior of wading",
+    "chapter": 135,
+    "link": "https://asuracomic.net/series/wandering-warrior-of-wudang-db789faa/chapter/135",
+    "lastReadDate": "2022-01-14",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_118"
+  },
+  {
+    "title": "SSS class suicide hunter",
+    "chapter": 109.5,
+    "link": "https://reaperscans.com/comics/5150-sss-class-suicide-hunter/chapters/67173991-chapter-1095",
+    "lastReadDate": "2022-01-20",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_119"
+  },
+  {
+    "title": "Leveling with the gods",
+    "chapter": 127,
+    "link": "https://reaperscans.com/series/leveling-with-the-gods-805/chapter-127",
+    "lastReadDate": "2022-01-21",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_120"
+  },
+  {
+    "title": "I obtained a mythic item",
+    "chapter": 164,
+    "link": "https://asuracomic.net/series/i-obtained-a-mythic-item-61d61bd5/chapter/164",
+    "lastReadDate": "2022-01-22",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_121"
+  },
+  {
+    "title": "Pick me up infinite gacha",
+    "chapter": 150,
+    "link": "https://asuracomic.net/series/pick-me-up-infinite-gacha-ce6c5aac/chapter/150",
+    "lastReadDate": "2022-01-22",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_122"
+  },
+  {
+    "title": "Updater",
+    "chapter": 98,
+    "link": "",
+    "lastReadDate": "2022-01-27",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "unknown",
+    "id": "manhwa_123"
+  },
+  {
+    "title": "The nebula civilization",
+    "chapter": 73,
+    "link": "https://asuracomic.net/series/the-nebulas-civilization-f844a9d2/chapter/73",
+    "lastReadDate": "2022-01-29",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_124"
+  },
+  {
+    "title": "Nano machine",
+    "chapter": 243,
+    "link": "https://asuracomic.net/series/nano-machine-2f06f1c7/chapter/243",
+    "lastReadDate": "2022-01-29",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_125"
+  },
+  {
+    "title": "Nine heavens sword master",
+    "chapter": 74.5,
+    "link": "https://flamecomics.com/nine-heavens-swordmaster-chapter-74-5/",
+    "lastReadDate": "2022-01-30",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_126"
+  },
+  {
+    "title": "Star fostered sword master",
+    "chapter": 26,
+    "link": "https://flamecomics.com/star-fostered-swordmaster-chapter-26/",
+    "lastReadDate": "2022-01-30",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_127"
+  },
+  {
+    "title": "Academy\u2019s genius swordsman",
+    "chapter": 33,
+    "link": "https://flamecomics.com/academys-genius-swordsman-chapter-33/",
+    "lastReadDate": "2022-01-30",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_128"
+  },
+  {
+    "title": "Solo max level newbie",
+    "chapter": 84,
+    "link": "https://www.asurascans.com/solo-max-level-newbie-chapter-84-land-of-cruel-cold-tundra/",
+    "lastReadDate": "2022-01-31",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_129"
+  },
+  {
+    "title": "My school life pretending to be a worthless person",
+    "chapter": 43,
+    "link": "https://www.asurascans.com/my-school-life-pretending-to-be-a-worthless-person-chapter-43/",
+    "lastReadDate": "2022-02-01",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_130"
+  },
+  {
+    "title": "Ex and ash",
+    "chapter": 67,
+    "link": "https://flamescans.org/1675422061-ex-and-ash-chapter-67/",
+    "lastReadDate": "2022-02-06",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_131"
+  },
+  {
+    "title": "Overgeared",
+    "chapter": 264,
+    "link": "https://reaperscans.com/series/overgeared/chapter-264",
+    "lastReadDate": "2022-02-09",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_132"
+  },
+  {
+    "title": "the demon prince goes to academy",
+    "chapter": 21,
+    "link": "https://reaperscans.com/comics/4770-the-demon-prince-goes-to-the-academy/chapters/53053301-chapter-21",
+    "lastReadDate": "2022-02-13",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_133"
+  },
+  {
+    "title": "Player who returned 10,000 years later",
+    "chapter": 54,
+    "link": "https://reaperscans.com/comics/2800-player-who-returned-10000-years-later/chapters/72273736-chapter-45",
+    "lastReadDate": "2023-02-13",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_134"
+  },
+  {
+    "title": "Sword masters youngest son",
+    "chapter": 100,
+    "link": "https://reaperscans.com/comics/4050-swordmasters-youngest-son/chapters/48333169-chapter-99",
+    "lastReadDate": "2023-02-18",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_135"
+  },
+  {
+    "title": "Infinite mage",
+    "chapter": 157,
+    "link": "https://asuracomic.net/series/infinite-mage-c2f05e79/chapter/157",
+    "lastReadDate": "2023-02-27",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_136"
+  },
+  {
+    "title": "Skill lender",
+    "chapter": 90,
+    "link": "https://mangafire.to/read/skill-lenders-retrieving-tale-i-told-you-its-10-per-10-days-at-first-didnt-ii.mxz8/en/chapter-90",
+    "lastReadDate": "2023-02-27",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_137"
+  },
+  {
+    "title": "The reincarnated assassin is a genius swordsman",
+    "chapter": 54,
+    "link": "https://asuracomic.net/series/the-reincarnated-assassin-is-a-genius-swordsman-3a344bdb/chapter/54",
+    "lastReadDate": "2023-03-03",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_138"
+  },
+  {
+    "title": "Reborn as the enemy\u2019s prince",
+    "chapter": 63,
+    "link": "https://asuracomic.net/series/reborn-as-the-enemy-prince-55fe9ffa/chapter/63",
+    "lastReadDate": "2023-03-03",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_139"
+  },
+  {
+    "title": "Omniscient reader",
+    "chapter": 252,
+    "link": "https://flamecomics.xyz/series/2/84185a02acdae926",
+    "lastReadDate": "2023-03-09",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_140"
+  },
+  {
+    "title": "Solo leveling ragnarok",
+    "chapter": 44,
+    "link": "https://flamecomics.xyz/series/143/3c600529bed56ecd",
+    "lastReadDate": "2023-03-09",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_141"
+  },
+  {
+    "title": "Surviving the apocalypse",
+    "chapter": 45,
+    "link": "https://flamecomics.xyz/series/138/b4bf91c0692ff22a",
+    "lastReadDate": "2023-03-09",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_142"
+  },
+  {
+    "title": "Legend of asura the venom dragon",
+    "chapter": 79,
+    "link": "https://www.asurascans.com/legend-of-asura-the-venom-dragon-chapter-79/",
+    "lastReadDate": "2023-03-09",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_143"
+  },
+  {
+    "title": "The Max Level Hero Has Returned",
+    "chapter": 78,
+    "link": "https://www.asurascans.com/the-max-level-hero-has-returned-chapter-78/",
+    "lastReadDate": "2023-03-09",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_144"
+  },
+  {
+    "title": "Ghost story club",
+    "chapter": 56,
+    "link": "https://reaperscans.com/series/ghost-story-club-remake/chapter-56",
+    "lastReadDate": "2023-03-10",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_145"
+  },
+  {
+    "title": "The hero returns",
+    "chapter": 111,
+    "link": "https://reaperscans.com/series/the-hero-returns/chapter-111",
+    "lastReadDate": "2023-03-17",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_146"
+  },
+  {
+    "title": "The 31st piece turns the tables",
+    "chapter": 84,
+    "link": "https://reaperscans.com/series/the-31st-piece-turns-the-tables-558/chapter-84",
+    "lastReadDate": "2023-03-17",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_147"
+  },
+  {
+    "title": "S class hunter doesn\u2019t want to be a villainous princess",
+    "chapter": 60,
+    "link": "https://reaperscans.com/series/the-s-class-hunter-doesnt-want-to-be-a-villainous-princess-791/chapter-60",
+    "lastReadDate": "2023-04-01",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_148"
+  },
+  {
+    "title": "The unbeatable dungeons lazy monster",
+    "chapter": 70.5,
+    "link": "https://reaperscans.com/series/the-unbeatable-dungeons-lazy-boss-monster/chapter-70-5",
+    "lastReadDate": "2023-04-01",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_149"
+  },
+  {
+    "title": "Rankers return",
+    "chapter": 182,
+    "link": "https://reaperscans.com/series/rankers-return/chapter-182",
+    "lastReadDate": "2023-04-01",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_150"
+  },
+  {
+    "title": "The constellation that returned from hell",
+    "chapter": 146,
+    "link": "https://asuratoon.com/4631981187-the-constellation-that-returned-from-hell-chapter-146/",
+    "lastReadDate": "2023-04-03",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_151"
+  },
+  {
+    "title": "Worn and Torn Newbie",
+    "chapter": 159,
+    "link": "https://asuratoon.com/4631981187-worn-and-torn-newbie-chapter-159/",
+    "lastReadDate": "2023-04-03",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_152"
+  },
+  {
+    "title": "The martial god who regressed to level 2",
+    "chapter": 92,
+    "link": "https://reaperscans.com/series/the-martial-god-who-regressed-back-to-level-2-382/chapter-92",
+    "lastReadDate": "2023-04-04",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_153"
+  },
+  {
+    "title": "Aire",
+    "chapter": 57,
+    "link": "https://reaperscans.com/series/aire/chapter-57/",
+    "lastReadDate": "2023-04-06",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_154"
+  },
+  {
+    "title": "Used to be a boss",
+    "chapter": 22,
+    "link": "https://flamescans.org/1680861661-i-used-to-be-a-boss-chapter-22/",
+    "lastReadDate": "2023-04-07",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_155"
+  },
+  {
+    "title": "Estio",
+    "chapter": 33,
+    "link": "https://reaperscans.com/series/estio/chapter-33/",
+    "lastReadDate": "2023-04-09",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_156"
+  },
+  {
+    "title": "The villain wants to live",
+    "chapter": 26,
+    "link": "https://reaperscans.com/series/the-villain-wants-to-live/chapter-26",
+    "lastReadDate": "2023-04-09",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_157"
+  },
+  {
+    "title": "Return of the SSS class ranker",
+    "chapter": 98,
+    "link": "https://asuratoon.com/8612194254-return-of-the-sss-class-ranker-chapter-98/",
+    "lastReadDate": "2023-04-09",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_158"
+  },
+  {
+    "title": "The greatest estate developer",
+    "chapter": 135,
+    "link": "https://asuratoon.com/1908287720-the-greatest-estate-developer-chapter-135/",
+    "lastReadDate": "2024-04-09",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_159"
+  },
+  {
+    "title": "Legendary youngest son o`he marquis house",
+    "chapter": 25,
+    "link": "https://www.asurascans.com/legendary-youngest-son-of-the-marquis-house-chapter-25/",
+    "lastReadDate": "2024-04-13",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_160"
+  },
+  {
+    "title": "Return of the mount Hua sect",
+    "chapter": 119,
+    "link": "https://asuratoon.com/1908287720-return-of-the-mount-hua-sect-chapter-119/",
+    "lastReadDate": "2024-04-16",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_161"
+  },
+  {
+    "title": "Sleeping ranker",
+    "chapter": 109,
+    "link": "https://asuratoon.com/1908287720-sleeping-ranker-chapter-109/",
+    "lastReadDate": "2024-04-16",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_162"
+  },
+  {
+    "title": "The tutorial of the advanced player",
+    "chapter": 109,
+    "link": "https://www.asurascans.com/the-tutorial-tower-of-the-advanced-player-chapter-109/",
+    "lastReadDate": "2024-04-25",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_163"
+  },
+  {
+    "title": "Return of the crazy demon",
+    "chapter": 118,
+    "link": "https://asuratoon.com/1908287720-the-return-of-the-crazy-demon-chapter-118/",
+    "lastReadDate": "2024-04-25",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_164"
+  },
+  {
+    "title": "Drug eating genius mage",
+    "chapter": 48,
+    "link": "https://asuratoon.com/8612194254-drug-eating-genius-mage-chapter-48/",
+    "lastReadDate": "2024-04-25",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_165"
+  },
+  {
+    "title": "I regressed as the duke",
+    "chapter": 20,
+    "link": "https://www.asurascans.com/i-regressed-as-the-duke-chapter-20/",
+    "lastReadDate": "2024-05-01",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_166"
+  },
+  {
+    "title": "Surviving the game as a barbarian",
+    "chapter": 53,
+    "link": "https://asuracomic.net/8612194254-surviving-the-game-as-a-barbarian-chapter-53/",
+    "lastReadDate": "2024-05-01",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_167"
+  },
+  {
+    "title": "F-class destiny hunter",
+    "chapter": 62,
+    "link": "https://asuracomic.net/8612194254-f-class-destiny-hunter-chapter-62/",
+    "lastReadDate": "2024-05-01",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_168"
+  },
+  {
+    "title": "Emperors domination",
+    "chapter": 19,
+    "link": "https://www.asurascans.com/emperors-domination-chapter-19/",
+    "lastReadDate": "2024-05-03",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_169"
+  },
+  {
+    "title": "Hoarding in hell",
+    "chapter": 32,
+    "link": "https://www.asurascans.com/hoarding-in-hell-chapter-32/",
+    "lastReadDate": "2024-05-03",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_170"
+  },
+  {
+    "title": "The Regressed Mercenary's Machinations",
+    "chapter": 37,
+    "link": "https://asuracomic.net/series/the-regressed-mercenarys-machinations-69ab1a87/chapter/37",
+    "lastReadDate": "2024-05-05",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_171"
+  },
+  {
+    "title": "Perfect surgeon",
+    "chapter": 26,
+    "link": "https://reaperscans.com/series/perfect-surgeon/chapter-26/",
+    "lastReadDate": "2024-05-06",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_172"
+  },
+  {
+    "title": "Return of the disaster class hero",
+    "chapter": 124,
+    "link": "https://reaperscans.com/series/the-return-of-the-disaster-class-hero/chapter-124",
+    "lastReadDate": "2024-05-06",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_173"
+  },
+  {
+    "title": "The tutorial is too hard",
+    "chapter": 213,
+    "link": "https://reaperscans.com/series/the-tutorial-is-too-hard-836/chapter-213",
+    "lastReadDate": "2024-05-07",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_174"
+  },
+  {
+    "title": "Archmage transcending through regression",
+    "chapter": 102,
+    "link": "https://asuracomic.net/1908287720-archmage-transcending-through-regression-chapter-102/",
+    "lastReadDate": "2024-05-12",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_175"
+  },
+  {
+    "title": "Myst might mayhem",
+    "chapter": 74,
+    "link": "https://asuracomic.net/series/myst-might-mayhem-6bcc3195/chapter/74",
+    "lastReadDate": "2024-05-21",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_176"
+  },
+  {
+    "title": "Eternally regressing knight",
+    "chapter": 58,
+    "link": "https://asuracomic.net/series/eternally-regressing-knight-4f95bdb1/chapter/58",
+    "lastReadDate": "2024-05-22",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_177"
+  },
+  {
+    "title": "Phantom spirit king",
+    "chapter": 21,
+    "link": "https://reaperscans.com/series/phantom-spirit-king/chapter-21/",
+    "lastReadDate": "2024-05-24",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_178"
+  },
+  {
+    "title": "How to live as a villain",
+    "chapter": 44,
+    "link": "https://reaperscans.com/series/how-to-live-as-a-villain/chapter-44/",
+    "lastReadDate": "2024-05-30",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_179"
+  },
+  {
+    "title": "Hyper luck",
+    "chapter": 20,
+    "link": "https://reaperscans.com/series/hyper-luck-manhwa/chapter-20/",
+    "lastReadDate": "2024-05-30",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_180"
+  },
+  {
+    "title": "Level 1 player",
+    "chapter": 38,
+    "link": "https://reaperscans.com/series/level-1-player/chapter-38/",
+    "lastReadDate": "2024-05-31",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_181"
+  },
+  {
+    "title": "Demonic evolution",
+    "chapter": 61,
+    "link": "https://demonicevolution.org/manga/demonic-evolution-chapter-61/",
+    "lastReadDate": "2024-05-31",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_182"
+  },
+  {
+    "title": "Relife player",
+    "chapter": 65,
+    "link": "https://asuracomic.net/8612194254-relife-player-chapter-65-s2-end/",
+    "lastReadDate": "2024-06-02",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_183"
+  },
+  {
+    "title": "I grow stronger by eating",
+    "chapter": 100,
+    "link": "https://asuracomic.net/8612194254-i-grow-stronger-by-eating-chapter-100-the-end/",
+    "lastReadDate": "2025-06-03",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_184"
+  },
+  {
+    "title": "Regressor instruction manual",
+    "chapter": 48,
+    "link": "https://reaperscans.com/series/regressor-instruction-manual/chapter-48/",
+    "lastReadDate": "2025-06-06",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_185"
+  },
+  {
+    "title": "Arcane sniper",
+    "chapter": 75,
+    "link": "https://reaperscans.com/series/arcane-sniper/chapter-75/",
+    "lastReadDate": "2025-06-06",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_186"
+  },
+  {
+    "title": "Academy undercover professor",
+    "chapter": 8,
+    "link": "https://reaperscans.com/series/academys-undercover-professor-manhwa/",
+    "lastReadDate": "2025-06-09",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_187"
+  },
+  {
+    "title": "Real life quest",
+    "chapter": 37,
+    "link": "https://flamescans.org/1654790462-real-life-quest-chapter-1/",
+    "lastReadDate": "2025-06-09",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_188"
+  },
+  {
+    "title": "The second coming of gluttony",
+    "chapter": 109,
+    "link": "https://www.asurascans.com/the-second-coming-of-gluttony-chapter-109/",
+    "lastReadDate": "2025-06-09",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_189"
+  },
+  {
+    "title": "Superhuman battlefield",
+    "chapter": 109,
+    "link": "https://asurascans.us/read-en-us/superhuman-battlefield/chapter-109/",
+    "lastReadDate": "2025-06-12",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_190"
+  },
+  {
+    "title": "I reincarnated as the crazed heir",
+    "chapter": 51,
+    "link": "https://www.asurascans.com/i-reincarnated-as-the-crazed-heir-chapter-51/",
+    "lastReadDate": "2025-06-14",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_191"
+  },
+  {
+    "title": "Regressing with the king\u2019s power",
+    "chapter": 95,
+    "link": "https://asuracomic.net/series/regressing-with-the-kings-power-05e2416a/chapter/95",
+    "lastReadDate": "2025-06-23",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_192"
+  },
+  {
+    "title": "Trash of the counts family",
+    "chapter": 110,
+    "link": "https://asuracomic.net/8612194254-trash-of-the-counts-family-chapter-110/",
+    "lastReadDate": "2025-06-25",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_193"
+  },
+  {
+    "title": "One step for the dark lord",
+    "chapter": 160,
+    "link": "https://flamecomics.me/one-step-for-the-dark-lord-chapter-160/",
+    "lastReadDate": "2025-06-30",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_194"
+  },
+  {
+    "title": "Reincarnation of the suicidal battle god",
+    "chapter": 100,
+    "link": "https://asuracomic.net/8612194254-reincarnation-of-the-suicidal-battle-god-chapter-100/",
+    "lastReadDate": "2025-07-18",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_195"
+  },
+  {
+    "title": "Poison eating healer",
+    "chapter": 50,
+    "link": "https://asura.gg/poison-eating-healer-chapter-50-s1-end/",
+    "lastReadDate": "2025-08-03",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_196"
+  },
+  {
+    "title": "Is this hero for real",
+    "chapter": 41,
+    "link": "https://reaperscans.com/series/is-this-hero-for-real/chapter-41/",
+    "lastReadDate": "2025-08-17",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_197"
+  },
+  {
+    "title": "The Great Mage Returns After 4000 Years",
+    "chapter": 185,
+    "link": "https://reaperscans.com/comics/7319-the-great-mage-returns-after-4000-years/chapters/74419125-chapter-185",
+    "lastReadDate": "2025-09-11",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_198"
+  },
+  {
+    "title": "Chronicles of the martial gods return",
+    "chapter": 35,
+    "link": "https://www.asurascans.com/chronicles-of-the-martial-gods-return-chapter-35/",
+    "lastReadDate": "2025-09-16",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_199"
+  },
+  {
+    "title": "Player from today onwards",
+    "chapter": 57,
+    "link": "https://reaperscans.com/series/player-from-today-onwards/chapter-57/",
+    "lastReadDate": "2025-09-24",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_200"
+  },
+  {
+    "title": "Return of the broken constellation",
+    "chapter": 50,
+    "link": "https://reaperscans.com/comics/3323-return-of-the-broken-constellation/chapters/32956515-chapter-50",
+    "lastReadDate": "2025-10-10",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_201"
+  },
+  {
+    "title": "Return of the legendary spear knight",
+    "chapter": 65.5,
+    "link": "https://reaperscans.com/comics/7655-return-of-the-legendary-spear-knight/chapters/64074428-chapter-655",
+    "lastReadDate": "2025-10-19",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_202"
+  },
+  {
+    "title": "Youngest son of the renowned magic clan",
+    "chapter": 20,
+    "link": "https://reaperscans.com/comics/5369-youngest-son-of-the-renowned-magic-clan/chapters/27880292-chapter-20",
+    "lastReadDate": "2025-10-20",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_203"
+  },
+  {
+    "title": "Return of the frozen player",
+    "chapter": 52,
+    "link": "https://reaperscans.com/comics/7868-return-of-the-frozen-player/chapters/21165072-chapter-52",
+    "lastReadDate": "2025-10-26",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_204"
+  },
+  {
+    "title": "The book of lager",
+    "chapter": 51,
+    "link": "https://asura.gg/the-book-of-lagier-chapter-51/",
+    "lastReadDate": "2025-10-26",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_205"
+  },
+  {
+    "title": "\uc11c\uc6b8\uc5ed \ub4dc\ub8e8\uc774\ub4dc Seoul station druid",
+    "chapter": 74,
+    "link": "https://reaperscans.com/comics/1185-seoul-station-druid/chapters/78078667-chapter-74",
+    "lastReadDate": "2025-10-30",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_206"
+  },
+  {
+    "title": "Of all things I became a crow",
+    "chapter": 57,
+    "link": "https://asura.gg/of-all-things-i-became-a-crow-chapter-57/",
+    "lastReadDate": "2026-11-08",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_207"
+  },
+  {
+    "title": "The house without time",
+    "chapter": 202,
+    "link": "https://www.mgeko.cc/reader/en/the-house-without-times-chapter-202-eng-li/",
+    "lastReadDate": "2026-11-24",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_208"
+  },
+  {
+    "title": "Dungeon reset",
+    "chapter": 135,
+    "link": "https://reaperscans.com/comics/8713-dungeon-reset/chapters/49253456-chapter-135",
+    "lastReadDate": "2026-11-28",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_209"
+  },
+  {
+    "title": "Return of the 8th class magician",
+    "chapter": 78,
+    "link": "https://asura.gg/return-of-the-8th-class-magician-chapter-78/",
+    "lastReadDate": "2026-12-04",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_210"
+  },
+  {
+    "title": "Shadowless night",
+    "chapter": 30,
+    "link": "https://asura.gg/shadowless-night-chapter-30/",
+    "lastReadDate": "2026-12-05",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_211"
+  },
+  {
+    "title": "The challenger",
+    "chapter": 33,
+    "link": "https://asura.gg/the-challenger-chapter-33/",
+    "lastReadDate": "2026-12-06",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_212"
+  },
+  {
+    "title": "Absolute sword sense",
+    "chapter": 21.5,
+    "link": "https://asura.gg/absolute-sword-sense-chapter-21-5/",
+    "lastReadDate": "2026-12-07",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_213"
+  },
+  {
+    "title": "Legend of asura venom dragon",
+    "chapter": 84,
+    "link": "https://asura.gg/legend-of-asura-the-venom-dragon-chapter-84/",
+    "lastReadDate": "2026-12-07",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_214"
+  },
+  {
+    "title": "Helmut the forsaken child",
+    "chapter": 34,
+    "link": "https://asura.gg/helmut-the-forsaken-child-chapter-34/",
+    "lastReadDate": "2026-12-07",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_215"
+  },
+  {
+    "title": "Demon lords martial arts ascension",
+    "chapter": 23,
+    "link": "https://asura.gg/demon-lords-martial-arts-ascension-chapter-23/",
+    "lastReadDate": "2026-12-10",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_216"
+  },
+  {
+    "title": "Champions path to murim",
+    "chapter": 33,
+    "link": "https://asura.gg/champions-path-to-murim-chapter-33/",
+    "lastReadDate": "2026-12-13",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_217"
+  },
+  {
+    "title": "Heavenly inquisition sword",
+    "chapter": 14,
+    "link": "https://asura.gg/heavenly-inquisition-sword-chapter-14/",
+    "lastReadDate": "2026-12-13",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_218"
+  },
+  {
+    "title": "Genius of a unique lineage",
+    "chapter": 24,
+    "link": "https://asura.gg/genius-of-the-unique-lineage-chapter-24/",
+    "lastReadDate": "2026-12-13",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_219"
+  },
+  {
+    "title": "Existence",
+    "chapter": 21,
+    "link": "https://asura.gg/existence-chapter-21/",
+    "lastReadDate": "2026-12-13",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_220"
+  },
+  {
+    "title": "The newbie is too strong",
+    "chapter": 40,
+    "link": "https://asura.gg/the-newbie-is-too-strong-chapter-40-s1-end/",
+    "lastReadDate": "2026-12-14",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_221"
+  },
+  {
+    "title": "Life of a magic academy mage",
+    "chapter": 19,
+    "link": "https://asura.gg/life-of-a-magic-academy-mage-chapter-19/",
+    "lastReadDate": "2026-12-17",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_222"
+  },
+  {
+    "title": "Worlds strongest troll",
+    "chapter": 13,
+    "link": "https://asura.gg/worlds-strongest-troll-chapter-13/",
+    "lastReadDate": "2026-12-17",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_223"
+  },
+  {
+    "title": "Star instructor",
+    "chapter": 50,
+    "link": "https://asura.gg/star-instructor-master-baek-chapter-50-s1-end/",
+    "lastReadDate": "2026-12-17",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_224"
+  },
+  {
+    "title": "The S classes that I raised",
+    "chapter": 61,
+    "link": "https://reaperscans.com/comics/3692-the-s-classes-that-i-raised/chapters/14651383-chapter-61",
+    "lastReadDate": "2026-12-19",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_225"
+  },
+  {
+    "title": "Knight of the frozen flower",
+    "chapter": 48,
+    "link": "https://reaperscans.com/comics/2818-knight-of-the-frozen-flower/chapters/23891309-chapter-48",
+    "lastReadDate": "2026-12-19",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_226"
+  },
+  {
+    "title": "Ragna crimson",
+    "chapter": 79,
+    "link": "https://ragna.ragnacrimsonmanga.com/manga/ragna-crimson-manga-chapter-79/",
+    "lastReadDate": "2026-12-22",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_227"
+  },
+  {
+    "title": "The god of war who regressed",
+    "chapter": 41,
+    "link": "https://flamecomics.com/the-god-of-war-who-regressed-to-level-2-chapter-41/",
+    "lastReadDate": "2026-12-30",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_228"
+  },
+  {
+    "title": "Youngest of the sword clan",
+    "chapter": 100,
+    "link": "https://flamecomics.com/youngest-son-of-the-renowned-swordsmanship-clan-chapter-100/",
+    "lastReadDate": "2026-12-30",
+    "status": "reading",
+    "notes": "",
+    "linkStatus": "active",
+    "id": "manhwa_229"
   }
 ];
 
 // Initialize application data
 function initApp() {
-  const storedData = localStorage.getItem('luxe_manhwa_tracker_data_v2');
+  const storedData = localStorage.getItem('luxe_manhwa_tracker_data_v3');
   if (storedData) {
     try {
       manhwas = JSON.parse(storedData);
@@ -1169,7 +2339,7 @@ function initApp() {
 }
 
 function saveData() {
-  localStorage.setItem('luxe_manhwa_tracker_data_v2', JSON.stringify(manhwas));
+  localStorage.setItem('luxe_manhwa_tracker_data_v3', JSON.stringify(manhwas));
 }
 
 // Helper to get today's date formatted as YYYY-MM-DD
