@@ -183,46 +183,6 @@ body {
   background-color: rgba(6, 13, 12, 0.03);
 }
 
-.back-to-top-btn {
-  position: fixed;
-  right: clamp(1rem, 3vw, 2rem);
-  bottom: clamp(1rem, 3vw, 2rem);
-  z-index: 900;
-  width: 46px;
-  height: 46px;
-  border: 1px solid var(--luxe-noir);
-  border-radius: var(--radius-sm);
-  background-color: var(--luxe-noir);
-  color: var(--soft-oat);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 12px 28px rgba(6, 13, 12, 0.18);
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(12px);
-  transition: var(--transition-smooth);
-}
-
-.back-to-top-btn:hover,
-.back-to-top-btn:focus-visible {
-  background-color: var(--soft-oat);
-  color: var(--luxe-noir);
-  transform: translateY(6px);
-}
-
-.back-to-top-btn:focus-visible {
-  outline: 2px solid var(--border-focus);
-  outline-offset: 3px;
-}
-
-.back-to-top-btn.visible {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateY(0);
-}
-
 /* ==========================================================================
    STATS DASHBOARD
    ========================================================================== */
