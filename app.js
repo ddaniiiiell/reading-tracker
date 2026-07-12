@@ -3074,6 +3074,34 @@ function closeModal() {
   manhwaForm.reset();
 }
 
+function initBackToTopButton() {
+  const backToTopBtn = document.getElementById('back-to-top-btn');
+  if (!backToTopBtn) return;
+
+  let ticking = false;
+
+  const updateVisibility = () => {
+    backToTopBtn.classList.toggle('visible', window.scrollY > 400);
+    ticking = false;
+  };
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(updateVisibility);
+      ticking = true;
+    }
+  }, { passive: true });
+
+  backToTopBtn.addEventListener('click', () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+
+  updateVisibility();
+}
+
 function attachCardListeners() {
   // Plus One Button
   document.querySelectorAll('.plus-one-btn').forEach(btn => {
@@ -3127,6 +3155,7 @@ function attachCardListeners() {
 // Bind Page Controllers
 document.addEventListener('DOMContentLoaded', () => {
   initApp();
+  initBackToTopButton();
 
   // "Add Manhwa" click events
   document.getElementById('add-manhwa-btn').addEventListener('click', () => {
