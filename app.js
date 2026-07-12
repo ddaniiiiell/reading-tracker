@@ -2685,17 +2685,47 @@ function deleteManhwa(id) {
   }
 }
 
+function updateLinkForChapter(link, newChapter) {
+  if (!link) return link;
+
+  const chapterPattern = /(chapter|ep|episode)([-_./]?)(\d+(?:[._-]\d+)*)/i;
+  if (!chapterPattern.test(link)) return link;
+
+  return link.replace(chapterPattern, (match, label, separator) => {
+    return `${label}${separator}${String(newChapter)}`;
+  });
+}
+
 function incrementChapter(id) {
+  let updatedLink = null;
+
   manhwas = manhwas.map(m => {
     if (m.id === id) {
+      const newChapter = (m.chapter || 0) + 1;
+      const nextLink = updateLinkForChapter(m.link, newChapter);
+
+      if (nextLink !== m.link) {
+        updatedLink = nextLink;
+      }
+
       return {
         ...m,
-        chapter: (m.chapter || 0) + 1,
+        chapter: newChapter,
+        link: nextLink,
         lastReadDate: getTodayString()
       };
     }
     return m;
   });
+
+  if (updatedLink) {
+    const updatedManhwa = manhwas.find(m => m.id === id);
+    if (updatedManhwa) {
+      updatedManhwa.linkStatus = 'checking';
+      setTimeout(() => pingLink(id, updatedLink), 100);
+    }
+  }
+
   saveData();
   render();
 }
