@@ -10,6 +10,8 @@ let currentFilter = 'all';
 let currentSort = 'latest-read';
 let searchQuery = '';
 let currentView = 'grid'; // 'grid' | 'list'
+const STORAGE_KEY = 'luxe_manhwa_tracker_data_v6';
+const LEGACY_STORAGE_KEY = 'luxe_manhwa_tracker_data_v5';
 
 // Default Mock Data for rich visual first-impression
 const MOCK_DATA = [
@@ -21,7 +23,7 @@ const MOCK_DATA = [
     "lastReadDate": "2022-01-01",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_2",
@@ -121,7 +123,7 @@ const MOCK_DATA = [
     "lastReadDate": "2022-10-10",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_12",
@@ -151,7 +153,7 @@ const MOCK_DATA = [
     "lastReadDate": "2022-11-05",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_15",
@@ -181,7 +183,7 @@ const MOCK_DATA = [
     "lastReadDate": "2022-11-17",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_18",
@@ -231,7 +233,7 @@ const MOCK_DATA = [
     "lastReadDate": "2023-03-12",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_23",
@@ -261,7 +263,7 @@ const MOCK_DATA = [
     "lastReadDate": "2023-04-19",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_26",
@@ -281,7 +283,7 @@ const MOCK_DATA = [
     "lastReadDate": "2023-05-22",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_28",
@@ -301,7 +303,7 @@ const MOCK_DATA = [
     "lastReadDate": "2023-08-03",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_30",
@@ -321,7 +323,7 @@ const MOCK_DATA = [
     "lastReadDate": "2023-08-03",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_32",
@@ -371,7 +373,7 @@ const MOCK_DATA = [
     "lastReadDate": "2023-10-29",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_37",
@@ -411,7 +413,7 @@ const MOCK_DATA = [
     "lastReadDate": "2023-12-28",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_41",
@@ -421,7 +423,7 @@ const MOCK_DATA = [
     "lastReadDate": "2023-01-07",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_42",
@@ -431,15 +433,15 @@ const MOCK_DATA = [
     "lastReadDate": "2024-01-11",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_43",
     "title": "FFF- class Trashhero",
     "chapter": 172,
-    "link": "https://fffclasstrashero.com/manga/941-fff-class-trashero-chapter-172/",
-    "lastReadDate": "2024-04-09",
-    "status": "reading",
+    "link": "https://toonily.com/serie/fff-class-trashero-8019099a/chapter-172/",
+    "lastReadDate": "2026-07-04",
+    "status": "on-hold",
     "notes": "",
     "linkStatus": "active"
   },
@@ -461,7 +463,7 @@ const MOCK_DATA = [
     "lastReadDate": "2024-04-19",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_46",
@@ -471,14 +473,14 @@ const MOCK_DATA = [
     "lastReadDate": "2024-04-25",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_47",
-    "title": "The black mage who reincarnated after 6666 years",
-    "chapter": 114,
-    "link": "https://darkmagiciantransmigrate.com/manga/the-dark-magician-transmigrates-after-66666-years-chapter-114/",
-    "lastReadDate": "2024-05-12",
+    "title": "The black mage who reincarnated after 66666 years",
+    "chapter": 190,
+    "link": "https://asurascans.com/comics/the-dark-magician-transmigrates-after-66666-years-a80d257e/chapter/190",
+    "lastReadDate": "2026-07-11",
     "status": "reading",
     "notes": "",
     "linkStatus": "active"
@@ -491,7 +493,7 @@ const MOCK_DATA = [
     "lastReadDate": "2024-05-14",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_49",
@@ -501,7 +503,7 @@ const MOCK_DATA = [
     "lastReadDate": "2024-05-27",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_50",
@@ -521,7 +523,7 @@ const MOCK_DATA = [
     "lastReadDate": "2024-06-12",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_52",
@@ -541,7 +543,7 @@ const MOCK_DATA = [
     "lastReadDate": "2024-06-18",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_54",
@@ -551,15 +553,15 @@ const MOCK_DATA = [
     "lastReadDate": "2024-06-18",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_55",
     "title": "I returned as an FFF-Class witch doctor",
-    "chapter": 74,
-    "link": "https://manhuaus.com/manga/i-returned-as-an-fff-class-witch-doctor/chapter-74/",
-    "lastReadDate": "2024-06-02",
-    "status": "reading",
+    "chapter": 114,
+    "link": "https://www.mgeko.cc/reader/en/i-returned-as-an-fff-class-witch-doctor-chapter-112-eng-li/",
+    "lastReadDate": "2026-07-03",
+    "status": "completed",
     "notes": "",
     "linkStatus": "active"
   },
@@ -581,7 +583,7 @@ const MOCK_DATA = [
     "lastReadDate": "2024-06-24",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_58",
@@ -591,7 +593,7 @@ const MOCK_DATA = [
     "lastReadDate": "2024-06-26",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_59",
@@ -601,7 +603,7 @@ const MOCK_DATA = [
     "lastReadDate": "2024-08-14",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_60",
@@ -715,13 +717,13 @@ const MOCK_DATA = [
   },
   {
     "id": "manhwa_71",
-    "title": "Goblin\u2019s night",
+    "title": "Goblin’s night",
     "chapter": 76,
     "link": "https://goblinsnight.com/manga/goblins-night-chapter-76/",
     "lastReadDate": "2024-12-03",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_72",
@@ -741,17 +743,17 @@ const MOCK_DATA = [
     "lastReadDate": "2024-01-03",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_74",
-    "title": "Magic academy\u2019s genius blinker",
+    "title": "Magic academy’s genius blinker",
     "chapter": 47,
     "link": "https://www.toongod.org/webtoon/magic-academys-genius-blinker/chapter-47/",
     "lastReadDate": "2025-01-14",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_75",
@@ -761,7 +763,7 @@ const MOCK_DATA = [
     "lastReadDate": "2025-01-14",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_76",
@@ -781,7 +783,7 @@ const MOCK_DATA = [
     "lastReadDate": "2025-02-09",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_78",
@@ -815,7 +817,7 @@ const MOCK_DATA = [
   },
   {
     "id": "manhwa_81",
-    "title": "The max level player\u2019s 100th regression",
+    "title": "The max level player’s 100th regression",
     "chapter": 46,
     "link": "https://w1.100regression.com/the-max-level-players-100th-regression-chapter-46/",
     "lastReadDate": "2025-03-03",
@@ -841,7 +843,7 @@ const MOCK_DATA = [
     "lastReadDate": "2025-04-28",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_84",
@@ -901,7 +903,7 @@ const MOCK_DATA = [
     "lastReadDate": "2025-05-19",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_90",
@@ -911,7 +913,7 @@ const MOCK_DATA = [
     "lastReadDate": "2025-07-01",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_91",
@@ -971,7 +973,7 @@ const MOCK_DATA = [
     "lastReadDate": "2026-02-18",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_97",
@@ -1021,7 +1023,7 @@ const MOCK_DATA = [
     "lastReadDate": "2026-03-15",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active"
+    "linkStatus": "broken"
   },
   {
     "id": "manhwa_102",
@@ -1045,7 +1047,7 @@ const MOCK_DATA = [
   },
   {
     "id": "manhwa_104",
-    "title": "The dark mage\u2019s return to enlistment",
+    "title": "The dark mage’s return to enlistment",
     "chapter": 84,
     "link": "https://asurascans.com/comics/the-dark-mages-return-to-enlistment-0984835a/chapter/85",
     "lastReadDate": "2026-05-04",
@@ -1225,9 +1227,9 @@ const MOCK_DATA = [
   },
   {
     "title": "Pick me up infinite gacha",
-    "chapter": 150,
-    "link": "https://asuracomic.net/series/pick-me-up-infinite-gacha-ce6c5aac/chapter/150",
-    "lastReadDate": "2021-01-22",
+    "chapter": 208,
+    "link": "https://asurascans.com/comics/pick-me-up-infinite-gacha-a80d257e/chapter/208",
+    "lastReadDate": "2026-07-07",
     "status": "reading",
     "notes": "",
     "linkStatus": "active",
@@ -1284,7 +1286,7 @@ const MOCK_DATA = [
     "id": "manhwa_127"
   },
   {
-    "title": "Academy\u2019s genius swordsman",
+    "title": "Academy’s genius swordsman",
     "chapter": 33,
     "link": "https://flamecomics.com/academys-genius-swordsman-chapter-33/",
     "lastReadDate": "2021-01-30",
@@ -1394,7 +1396,7 @@ const MOCK_DATA = [
     "id": "manhwa_138"
   },
   {
-    "title": "Reborn as the enemy\u2019s prince",
+    "title": "Reborn as the enemy’s prince",
     "chapter": 63,
     "link": "https://asuracomic.net/series/reborn-as-the-enemy-prince-55fe9ffa/chapter/63",
     "lastReadDate": "2022-03-03",
@@ -1484,7 +1486,7 @@ const MOCK_DATA = [
     "id": "manhwa_147"
   },
   {
-    "title": "S class hunter doesn\u2019t want to be a villainous princess",
+    "title": "S class hunter doesn’t want to be a villainous princess",
     "chapter": 60,
     "link": "https://reaperscans.com/series/the-s-class-hunter-doesnt-want-to-be-a-villainous-princess-791/chapter-60",
     "lastReadDate": "2022-04-01",
@@ -1604,10 +1606,10 @@ const MOCK_DATA = [
     "id": "manhwa_159"
   },
   {
-    "title": "Legendary youngest son o`he marquis house",
-    "chapter": 25,
-    "link": "https://www.asurascans.com/legendary-youngest-son-of-the-marquis-house-chapter-25/",
-    "lastReadDate": "2023-04-13",
+    "title": "Legendary youngest son of the marquis house",
+    "chapter": 92,
+    "link": "https://asurascans.com/comics/legendary-youngest-son-of-the-marquis-house-a80d257e/chapter/92",
+    "lastReadDate": "2026-07-08",
     "status": "reading",
     "notes": "",
     "linkStatus": "active",
@@ -1658,20 +1660,10 @@ const MOCK_DATA = [
     "chapter": 48,
     "link": "https://asuratoon.com/8612194254-drug-eating-genius-mage-chapter-48/",
     "lastReadDate": "2023-04-25",
-    "status": "reading",
+    "status": "on-hold",
     "notes": "",
     "linkStatus": "active",
     "id": "manhwa_165"
-  },
-  {
-    "title": "I regressed as the duke",
-    "chapter": 20,
-    "link": "https://www.asurascans.com/i-regressed-as-the-duke-chapter-20/",
-    "lastReadDate": "2023-05-01",
-    "status": "reading",
-    "notes": "",
-    "linkStatus": "active",
-    "id": "manhwa_166"
   },
   {
     "title": "Surviving the game as a barbarian",
@@ -1682,16 +1674,6 @@ const MOCK_DATA = [
     "notes": "",
     "linkStatus": "active",
     "id": "manhwa_167"
-  },
-  {
-    "title": "F-class destiny hunter",
-    "chapter": 62,
-    "link": "https://asuracomic.net/8612194254-f-class-destiny-hunter-chapter-62/",
-    "lastReadDate": "2023-05-01",
-    "status": "reading",
-    "notes": "",
-    "linkStatus": "active",
-    "id": "manhwa_168"
   },
   {
     "title": "Emperors domination",
@@ -1848,7 +1830,7 @@ const MOCK_DATA = [
     "chapter": 100,
     "link": "https://asuracomic.net/8612194254-i-grow-stronger-by-eating-chapter-100-the-end/",
     "lastReadDate": "2024-06-03",
-    "status": "reading",
+    "status": "on-hold",
     "notes": "",
     "linkStatus": "active",
     "id": "manhwa_184"
@@ -1890,7 +1872,7 @@ const MOCK_DATA = [
     "lastReadDate": "2024-06-09",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active",
+    "linkStatus": "broken",
     "id": "manhwa_188"
   },
   {
@@ -1924,7 +1906,7 @@ const MOCK_DATA = [
     "id": "manhwa_191"
   },
   {
-    "title": "Regressing with the king\u2019s power",
+    "title": "Regressing with the king’s power",
     "chapter": 95,
     "link": "https://asuracomic.net/series/regressing-with-the-kings-power-05e2416a/chapter/95",
     "lastReadDate": "2024-06-23",
@@ -1950,7 +1932,7 @@ const MOCK_DATA = [
     "lastReadDate": "2024-06-30",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active",
+    "linkStatus": "broken",
     "id": "manhwa_194"
   },
   {
@@ -1969,7 +1951,7 @@ const MOCK_DATA = [
     "link": "https://asura.gg/poison-eating-healer-chapter-50-s1-end/",
     "lastReadDate": "2024-08-03",
     "status": "reading",
-    "notes": "",
+    "notes": "on haitus",
     "linkStatus": "active",
     "id": "manhwa_196"
   },
@@ -2034,16 +2016,6 @@ const MOCK_DATA = [
     "id": "manhwa_202"
   },
   {
-    "title": "Youngest son of the renowned magic clan",
-    "chapter": 20,
-    "link": "https://reaperscans.com/comics/5369-youngest-son-of-the-renowned-magic-clan/chapters/27880292-chapter-20",
-    "lastReadDate": "2024-10-20",
-    "status": "reading",
-    "notes": "",
-    "linkStatus": "active",
-    "id": "manhwa_203"
-  },
-  {
     "title": "Return of the frozen player",
     "chapter": 52,
     "link": "https://reaperscans.com/comics/7868-return-of-the-frozen-player/chapters/21165072-chapter-52",
@@ -2064,7 +2036,7 @@ const MOCK_DATA = [
     "id": "manhwa_205"
   },
   {
-    "title": "\uc11c\uc6b8\uc5ed \ub4dc\ub8e8\uc774\ub4dc Seoul station druid",
+    "title": "서울역 드루이드 Seoul station druid",
     "chapter": 74,
     "link": "https://reaperscans.com/comics/1185-seoul-station-druid/chapters/78078667-chapter-74",
     "lastReadDate": "2024-10-30",
@@ -2280,7 +2252,7 @@ const MOCK_DATA = [
     "lastReadDate": "2025-12-22",
     "status": "reading",
     "notes": "",
-    "linkStatus": "active",
+    "linkStatus": "broken",
     "id": "manhwa_227"
   },
   {
@@ -2514,16 +2486,6 @@ const MOCK_DATA = [
     "id": "manhwa_250"
   },
   {
-    "title": "Super evolution",
-    "chapter": 27,
-    "link": "https://www.asurascans.com/comics/super-evolution/",
-    "lastReadDate": "",
-    "status": "plan-to-read",
-    "notes": "",
-    "linkStatus": "active",
-    "id": "manhwa_251"
-  },
-  {
     "title": "Above the heavens",
     "chapter": 11,
     "link": "https://www.asurascans.com/comics/above-the-heavens/",
@@ -2552,12 +2514,43 @@ const MOCK_DATA = [
     "notes": "",
     "linkStatus": "active",
     "id": "manhwa_254"
+  },
+  {
+    "id": "manhwa_1783359810304",
+    "title": "Reincarnation of the Fist King",
+    "chapter": 59,
+    "status": "reading",
+    "link": "https://asurascans.com/comics/reincarnation-of-the-fist-king-a80d257e/chapter/59",
+    "lastReadDate": "2026-07-06",
+    "notes": "",
+    "linkStatus": "active"
+  },
+  {
+    "id": "manhwa_1783444527716",
+    "title": "Auto Hunting With My Clones",
+    "chapter": 176,
+    "status": "completed",
+    "link": "https://autohuntingclones.com/comic/auto-hunting-with-my-clones-chapter-176/",
+    "lastReadDate": "2026-07-07",
+    "notes": "",
+    "linkStatus": "active"
+  },
+  {
+    "id": "manhwa_1783620131165",
+    "title": "Steel-Eating player",
+    "chapter": 101,
+    "status": "reading",
+    "link": "https://asurascans.com/comics/steel-eating-player-a80d257e/chapter/101",
+    "lastReadDate": "2026-07-09",
+    "notes": "",
+    "linkStatus": "active"
   }
 ];
 
 // Initialize application data
 function initApp() {
-  const storedData = localStorage.getItem('luxe_manhwa_tracker_data_v5');
+  const storedData = localStorage.getItem(STORAGE_KEY);
+  const legacyStoredData = localStorage.getItem(LEGACY_STORAGE_KEY);
   if (storedData) {
     try {
       manhwas = JSON.parse(storedData);
@@ -2565,6 +2558,14 @@ function initApp() {
       console.error("Error parsing stored manhwa data, fallback to mock data", e);
       manhwas = [...MOCK_DATA];
     }
+  } else if (legacyStoredData) {
+    try {
+      manhwas = mergeRecoveredData(JSON.parse(legacyStoredData));
+    } catch (e) {
+      console.error("Error parsing legacy manhwa data, fallback to recovered data", e);
+      manhwas = [...MOCK_DATA];
+    }
+    saveData();
   } else {
     manhwas = [...MOCK_DATA];
     saveData();
@@ -2588,8 +2589,18 @@ function initApp() {
   render();
 }
 
+function mergeRecoveredData(storedManhwas) {
+  if (!Array.isArray(storedManhwas)) {
+    return [...MOCK_DATA];
+  }
+
+  const recoveredIds = new Set(MOCK_DATA.map(m => m.id));
+  const browserOnlyManhwas = storedManhwas.filter(m => m && !recoveredIds.has(m.id));
+  return [...MOCK_DATA, ...browserOnlyManhwas];
+}
+
 function saveData() {
-  localStorage.setItem('luxe_manhwa_tracker_data_v5', JSON.stringify(manhwas));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(manhwas));
 }
 
 // Helper to get today's date formatted as YYYY-MM-DD
