@@ -2700,37 +2700,44 @@ async function startTrackerSync(user) {
 
   cloudSync.trackerDocRef = firestoreModule.doc(db, 'users', user.uid, 'tracker', 'manhwas');
 
-  const snapshot = await firestoreModule.getDoc(cloudSync.trackerDocRef);
-  if (snapshot.exists()) {
-    const data = snapshot.data();
-    if (Array.isArray(data.manhwas)) {
+  try {
+    const snapshot = await firestoreModule.getDoc(cloudSync.trackerDocRef);
+    if (snapshot.exists()) {
+      const data = snapshot.data();
+      if (Array.isArray(data.manhwas)) {
+        cloudSync.isApplyingRemote = true;
+        manhwas = data.manhwas;
+        persistLocalData();
+        render();
+        cloudSync.isApplyingRemote = false;
+      }
+    } else {
+      await saveData();
+    }
+
+    cloudSync.unsubscribe = firestoreModule.onSnapshot(cloudSync.trackerDocRef, (snapshot) => {
+      if (!snapshot.exists() || isSavingData) return;
+
+      const data = snapshot.data();
+      if (!Array.isArray(data.manhwas)) return;
+
+      const incomingJSON = JSON.stringify(data.manhwas);
+      if (incomingJSON === JSON.stringify(manhwas)) return;
+
       cloudSync.isApplyingRemote = true;
       manhwas = data.manhwas;
       persistLocalData();
       render();
       cloudSync.isApplyingRemote = false;
-    }
-  } else {
-    await saveData();
+    });
+
+    updateCloudSyncUI('synced');
+  } catch (error) {
+    console.warn('Cloud sync initialization failed.', error);
+    cloudSync.trackerDocRef = null;
+    stopTrackerSync();
+    updateCloudSyncUI('signed-out');
   }
-
-  cloudSync.unsubscribe = firestoreModule.onSnapshot(cloudSync.trackerDocRef, (snapshot) => {
-    if (!snapshot.exists() || isSavingData) return;
-
-    const data = snapshot.data();
-    if (!Array.isArray(data.manhwas)) return;
-
-    const incomingJSON = JSON.stringify(data.manhwas);
-    if (incomingJSON === JSON.stringify(manhwas)) return;
-
-    cloudSync.isApplyingRemote = true;
-    manhwas = data.manhwas;
-    persistLocalData();
-    render();
-    cloudSync.isApplyingRemote = false;
-  });
-
-  updateCloudSyncUI('synced');
 }
 
 function updateCloudSyncUI(state) {
