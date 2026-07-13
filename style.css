@@ -103,6 +103,12 @@ body {
   margin-top: var(--spacing-xs);
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
 /* =svg icon style */
 .icon {
   width: 18px;
@@ -153,6 +159,18 @@ body {
   background-color: var(--luxe-noir);
   color: var(--soft-oat);
   transform: translateY(-2px);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-secondary.active {
+  background-color: var(--luxe-noir);
+  color: var(--soft-oat);
+  border-color: var(--luxe-noir);
 }
 
 .btn-tertiary {
@@ -795,6 +813,7 @@ textarea {
   
   .header-actions {
     width: 100%;
+    flex-direction: column;
   }
   
   .btn {

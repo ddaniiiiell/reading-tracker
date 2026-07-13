@@ -10,8 +10,22 @@ let currentFilter = 'all';
 let currentSort = 'latest-read';
 let searchQuery = '';
 let currentView = 'grid'; // 'grid' | 'list'
+let isSavingData = false;
+let lastSavedDataJSON = '';
 const STORAGE_KEY = 'luxe_manhwa_tracker_data_v6';
 const LEGACY_STORAGE_KEY = 'luxe_manhwa_tracker_data_v5';
+const FIREBASE_CONFIG_PATH = './firebase-config.js';
+const FIREBASE_SDK_VERSION = '10.12.5';
+const cloudSync = {
+  available: false,
+  user: null,
+  auth: null,
+  provider: null,
+  trackerDocRef: null,
+  unsubscribe: null,
+  modules: null,
+  isApplyingRemote: false
+};
 
 // Default Mock Data for rich visual first-impression
 const MOCK_DATA = [
@@ -2548,28 +2562,8 @@ const MOCK_DATA = [
 ];
 
 // Initialize application data
-function initApp() {
-  const storedData = localStorage.getItem(STORAGE_KEY);
-  const legacyStoredData = localStorage.getItem(LEGACY_STORAGE_KEY);
-  if (storedData) {
-    try {
-      manhwas = JSON.parse(storedData);
-    } catch (e) {
-      console.error("Error parsing stored manhwa data, fallback to mock data", e);
-      manhwas = [...MOCK_DATA];
-    }
-  } else if (legacyStoredData) {
-    try {
-      manhwas = mergeRecoveredData(JSON.parse(legacyStoredData));
-    } catch (e) {
-      console.error("Error parsing legacy manhwa data, fallback to recovered data", e);
-      manhwas = [...MOCK_DATA];
-    }
-    saveData();
-  } else {
-    manhwas = [...MOCK_DATA];
-    saveData();
-  }
+async function initApp() {
+  manhwas = loadLocalManhwas();
   
   const storedView = localStorage.getItem('luxe_manhwa_tracker_view');
   if (storedView) {
@@ -2587,6 +2581,35 @@ function initApp() {
   document.getElementById('input-date').value = getTodayString();
   
   render();
+  await initCloudSync();
+}
+
+function loadLocalManhwas() {
+  const storedData = localStorage.getItem(STORAGE_KEY);
+  const legacyStoredData = localStorage.getItem(LEGACY_STORAGE_KEY);
+
+  if (storedData) {
+    try {
+      const parsedManhwas = JSON.parse(storedData);
+      return Array.isArray(parsedManhwas) ? parsedManhwas : [...MOCK_DATA];
+    } catch (e) {
+      console.error("Error parsing stored manhwa data, fallback to mock data", e);
+      return [...MOCK_DATA];
+    }
+  } else if (legacyStoredData) {
+    try {
+      const recoveredManhwas = mergeRecoveredData(JSON.parse(legacyStoredData));
+      persistLocalData(recoveredManhwas);
+      return recoveredManhwas;
+    } catch (e) {
+      console.error("Error parsing legacy manhwa data, fallback to recovered data", e);
+      return [...MOCK_DATA];
+    }
+  }
+
+  const defaultManhwas = [...MOCK_DATA];
+  persistLocalData(defaultManhwas);
+  return defaultManhwas;
 }
 
 function mergeRecoveredData(storedManhwas) {
@@ -2599,8 +2622,164 @@ function mergeRecoveredData(storedManhwas) {
   return [...MOCK_DATA, ...browserOnlyManhwas];
 }
 
-function saveData() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(manhwas));
+async function initCloudSync() {
+  updateCloudSyncUI('local');
+
+  try {
+    const [{ firebaseConfig }, appModule, authModule, firestoreModule] = await Promise.all([
+      import(FIREBASE_CONFIG_PATH),
+      import(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK_VERSION}/firebase-app.js`),
+      import(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK_VERSION}/firebase-auth.js`),
+      import(`https://www.gstatic.com/firebasejs/${FIREBASE_SDK_VERSION}/firebase-firestore.js`)
+    ]);
+
+    if (!firebaseConfig || firebaseConfig.projectId === 'YOUR_PROJECT_ID') {
+      throw new Error('Firebase config has not been filled in yet.');
+    }
+
+    const firebaseApp = appModule.initializeApp(firebaseConfig);
+    cloudSync.auth = authModule.getAuth(firebaseApp);
+    cloudSync.provider = new authModule.GoogleAuthProvider();
+    cloudSync.modules = { authModule, firestoreModule, db: firestoreModule.getFirestore(firebaseApp) };
+    cloudSync.available = true;
+    updateCloudSyncUI('signed-out');
+
+    authModule.onAuthStateChanged(cloudSync.auth, async (user) => {
+      if (!user) {
+        stopTrackerSync();
+        cloudSync.user = null;
+        cloudSync.trackerDocRef = null;
+        updateCloudSyncUI('signed-out');
+        return;
+      }
+
+      cloudSync.user = user;
+      updateCloudSyncUI('syncing');
+      await startTrackerSync(user);
+    });
+  } catch (error) {
+    console.info('Firebase cloud sync is not configured; using this browser only.', error);
+    cloudSync.available = false;
+    updateCloudSyncUI('local');
+  }
+}
+
+function stopTrackerSync() {
+  if (cloudSync.unsubscribe) {
+    cloudSync.unsubscribe();
+    cloudSync.unsubscribe = null;
+  }
+}
+
+async function signInToCloud() {
+  if (!cloudSync.available || !cloudSync.auth || !cloudSync.provider) return;
+
+  updateCloudSyncUI('syncing');
+
+  try {
+    await cloudSync.modules.authModule.signInWithPopup(cloudSync.auth, cloudSync.provider);
+  } catch (error) {
+    console.warn('Google sign-in failed.', error);
+    updateCloudSyncUI('signed-out');
+  }
+}
+
+async function signOutOfCloud() {
+  if (!cloudSync.available || !cloudSync.auth) return;
+
+  try {
+    await cloudSync.modules.authModule.signOut(cloudSync.auth);
+  } catch (error) {
+    console.warn('Google sign-out failed.', error);
+  }
+}
+
+async function startTrackerSync(user) {
+  const { firestoreModule, db } = cloudSync.modules;
+  stopTrackerSync();
+
+  cloudSync.trackerDocRef = firestoreModule.doc(db, 'users', user.uid, 'tracker', 'manhwas');
+
+  const snapshot = await firestoreModule.getDoc(cloudSync.trackerDocRef);
+  if (snapshot.exists()) {
+    const data = snapshot.data();
+    if (Array.isArray(data.manhwas)) {
+      cloudSync.isApplyingRemote = true;
+      manhwas = data.manhwas;
+      persistLocalData();
+      render();
+      cloudSync.isApplyingRemote = false;
+    }
+  } else {
+    await saveData();
+  }
+
+  cloudSync.unsubscribe = firestoreModule.onSnapshot(cloudSync.trackerDocRef, (snapshot) => {
+    if (!snapshot.exists() || isSavingData) return;
+
+    const data = snapshot.data();
+    if (!Array.isArray(data.manhwas)) return;
+
+    const incomingJSON = JSON.stringify(data.manhwas);
+    if (incomingJSON === JSON.stringify(manhwas)) return;
+
+    cloudSync.isApplyingRemote = true;
+    manhwas = data.manhwas;
+    persistLocalData();
+    render();
+    cloudSync.isApplyingRemote = false;
+  });
+
+  updateCloudSyncUI('synced');
+}
+
+function updateCloudSyncUI(state) {
+  const button = document.getElementById('cloud-sync-btn');
+  const label = document.getElementById('cloud-sync-label');
+  if (!button || !label) return;
+
+  button.disabled = false;
+  button.classList.remove('active');
+
+  if (state === 'local') {
+    button.disabled = true;
+    label.textContent = 'Local Only';
+    button.title = 'Add firebase-config.js to enable cloud sync.';
+  } else if (state === 'signed-out') {
+    label.textContent = 'Sign In';
+    button.title = 'Sign in with Google to sync with Firebase.';
+  } else if (state === 'syncing') {
+    button.disabled = true;
+    label.textContent = 'Syncing';
+    button.title = 'Connecting to Firebase.';
+  } else if (state === 'synced') {
+    button.classList.add('active');
+    label.textContent = 'Cloud On';
+    button.title = cloudSync.user ? `Synced as ${cloudSync.user.email}` : 'Synced with Firebase.';
+  }
+}
+
+function persistLocalData(data = manhwas) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  lastSavedDataJSON = JSON.stringify(data);
+}
+
+async function saveData() {
+  persistLocalData();
+
+  if (!cloudSync.trackerDocRef || cloudSync.isApplyingRemote) return;
+
+  isSavingData = true;
+  try {
+    await cloudSync.modules.firestoreModule.setDoc(cloudSync.trackerDocRef, {
+      manhwas,
+      updatedAt: cloudSync.modules.firestoreModule.serverTimestamp()
+    });
+  } catch (error) {
+    console.warn('Could not save to Firestore; changes are saved in this browser only.', error);
+  } finally {
+    isSavingData = false;
+  }
 }
 
 // Helper to get today's date formatted as YYYY-MM-DD
@@ -3183,8 +3362,8 @@ function attachCardListeners() {
 }
 
 // Bind Page Controllers
-document.addEventListener('DOMContentLoaded', () => {
-  initApp();
+document.addEventListener('DOMContentLoaded', async () => {
+  await initApp();
   initBackToTopButton();
 
   // "Add Manhwa" click events
@@ -3195,6 +3374,19 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('empty-add-btn').addEventListener('click', () => {
     openModal("Add New Manhwa", 'add');
   });
+
+  const cloudSyncBtn = document.getElementById('cloud-sync-btn');
+  if (cloudSyncBtn) {
+    cloudSyncBtn.addEventListener('click', () => {
+      if (!cloudSync.available) return;
+
+      if (cloudSync.user) {
+        signOutOfCloud();
+      } else {
+        signInToCloud();
+      }
+    });
+  }
 
   // Close modals
   document.getElementById('modal-close').addEventListener('click', closeModal);
