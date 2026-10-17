@@ -21,6 +21,8 @@ let tierCloudSaveTimer = null;
 let tierLastSentAt = 0;
 let tierCloudSaving = false;
 let lastTierShareSnapshotJSON = '';
+let tierNameEditorMode = null;
+let tierNameTargetId = null;
 
 function normalizeTierState(value) {
   if (!value || !Array.isArray(value.lists)) return null;
@@ -110,6 +112,11 @@ function syncTierListsFromCloud(remoteValue) {
 function getTierEligibleManhwas() {
   return manhwas.filter(manhwa => manhwa && manhwa.id && manhwa.title
     && manhwa.status !== 'plan-to-read');
+}
+
+function tierLastReadTime(manhwa) {
+  const timestamp = Date.parse(manhwa.lastReadDate || '');
+  return Number.isFinite(timestamp) ? timestamp : 0;
 }
 
 function buildTierShareSnapshot() {
@@ -209,7 +216,9 @@ function renderTierLists() {
     </div>`;
   }).join('');
 
-  const unranked = eligible.filter(manhwa => !TIER_IDS.has(list.rankings[manhwa.id]));
+  const unranked = eligible.filter(manhwa => !TIER_IDS.has(list.rankings[manhwa.id]))
+    .sort((a, b) => tierLastReadTime(b) - tierLastReadTime(a)
+      || a.title.localeCompare(b.title));
   document.getElementById('tier-unranked-count').textContent = `(${unranked.length})`;
   const visible = unranked.filter(manhwa =>
     manhwa.title.toLowerCase().includes(tierSearchQuery.toLowerCase()));
@@ -240,6 +249,7 @@ function assignManhwaTier(manhwaId, tierId) {
 
 function switchTrackerSection(section) {
   const showingTiers = section === 'tiers';
+  if (!showingTiers) closeTierNameEditor();
   document.getElementById('library-view').classList.toggle('hidden', showingTiers);
   document.getElementById('tier-lists-view').classList.toggle('hidden', !showingTiers);
   document.getElementById('library-tab').classList.toggle('active', !showingTiers);
@@ -256,15 +266,23 @@ function switchTrackerSection(section) {
   localStorage.setItem('luxe_manhwa_tracker_section', section);
 }
 
-function promptForTierListName(initialName, message) {
-  const entered = window.prompt(message, initialName);
-  if (entered === null) return null;
-  const name = entered.trim().slice(0, 80);
-  if (!name) {
-    setTierStatus('Enter a name for your list.');
-    return null;
-  }
-  return name;
+function openTierNameEditor(mode) {
+  const list = getActiveTierList();
+  tierNameEditorMode = mode;
+  tierNameTargetId = mode === 'rename' ? list.id : null;
+  document.getElementById('tier-name-label').textContent = mode === 'new' ? 'New list name' : 'Rename list';
+  document.getElementById('tier-name-save-btn').textContent = mode === 'new' ? 'Create List' : 'Save Name';
+  const input = document.getElementById('tier-name-input');
+  input.value = mode === 'new' ? 'New Tier List' : list.name;
+  document.getElementById('tier-name-form').classList.remove('hidden');
+  input.focus();
+  input.select();
+}
+
+function closeTierNameEditor() {
+  tierNameEditorMode = null;
+  tierNameTargetId = null;
+  document.getElementById('tier-name-form').classList.add('hidden');
 }
 
 function wrapTierExportText(ctx, text, maxWidth) {
@@ -426,29 +444,49 @@ function initTierLists() {
   document.getElementById('library-tab').addEventListener('click', () => switchTrackerSection('library'));
   document.getElementById('tier-lists-tab').addEventListener('click', () => switchTrackerSection('tiers'));
   document.getElementById('tier-list-select').addEventListener('change', event => {
+    closeTierNameEditor();
     tierState.activeId = event.target.value;
     touchTierState();
   });
-  document.getElementById('tier-new-btn').addEventListener('click', () => {
-    const name = promptForTierListName('New Tier List', 'Name your new tier list:');
-    if (!name) return;
-    const id = `tier_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-    tierState.lists.push({ id, name, rankings: {} });
-    tierState.activeId = id;
-    tierSearchQuery = '';
-    document.getElementById('tier-search').value = '';
-    touchTierState();
+  document.getElementById('tier-new-btn').addEventListener('click', () => openTierNameEditor('new'));
+  document.getElementById('tier-rename-btn').addEventListener('click', () => openTierNameEditor('rename'));
+  document.getElementById('tier-name-cancel-btn').addEventListener('click', closeTierNameEditor);
+  document.getElementById('tier-name-form').addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeTierNameEditor();
+    }
   });
-  document.getElementById('tier-rename-btn').addEventListener('click', () => {
-    const list = getActiveTierList();
-    const name = promptForTierListName(list.name, 'Rename this tier list:');
-    if (!name || name === list.name) return;
-    list.name = name;
-    touchTierState();
+  document.getElementById('tier-name-form').addEventListener('submit', event => {
+    event.preventDefault();
+    const name = document.getElementById('tier-name-input').value.trim().slice(0, 80);
+    if (!name) {
+      setTierStatus('Enter a name for your list.');
+      document.getElementById('tier-name-input').focus();
+      return;
+    }
+    const mode = tierNameEditorMode;
+    const targetId = tierNameTargetId;
+    closeTierNameEditor();
+    if (mode === 'new') {
+      const id = `tier_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      tierState.lists.push({ id, name, rankings: {} });
+      tierState.activeId = id;
+      tierSearchQuery = '';
+      document.getElementById('tier-search').value = '';
+      touchTierState();
+    } else if (mode === 'rename') {
+      const list = tierState.lists.find(item => item.id === targetId);
+      if (list && name !== list.name) {
+        list.name = name;
+        touchTierState();
+      }
+    }
   });
   document.getElementById('tier-delete-btn').addEventListener('click', () => {
     const list = getActiveTierList();
     if (!confirm(`Delete tier list "${list.name}"? Your reading library will stay intact.`)) return;
+    closeTierNameEditor();
     tierState.lists = tierState.lists.filter(item => item.id !== list.id);
     if (!tierState.lists.length) {
       tierState.lists.push({ id: `tier_${Date.now()}`, name: 'My Manhwa Tier List', rankings: {} });

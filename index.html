@@ -178,6 +178,13 @@
         <button id="tier-delete-btn" class="btn btn-tertiary" type="button">Delete List</button>
       </div>
 
+      <form id="tier-name-form" class="tier-name-editor hidden">
+        <label id="tier-name-label" for="tier-name-input">List name</label>
+        <input id="tier-name-input" type="text" maxlength="80" required autocomplete="off">
+        <button id="tier-name-save-btn" class="btn btn-primary" type="submit">Save Name</button>
+        <button id="tier-name-cancel-btn" class="btn btn-tertiary" type="button">Cancel</button>
+      </form>
+
       <div id="tier-link-output" class="tier-link-output hidden">
         <label for="tier-link-input">Static share link</label>
         <input id="tier-link-input" type="text" readonly aria-label="Static tier list share link">
@@ -190,7 +197,7 @@
       <div class="tier-pool-heading">
         <div>
           <h3>Unranked titles <span id="tier-unranked-count"></span></h3>
-          <p>Drag a title into a tier, or use its menu on a phone or keyboard.</p>
+          <p>Sorted by latest read. Drag a title into a tier, or use its menu on a phone or keyboard.</p>
         </div>
         <input id="tier-search" type="search" placeholder="Find a title..." aria-label="Search unranked titles">
       </div>
