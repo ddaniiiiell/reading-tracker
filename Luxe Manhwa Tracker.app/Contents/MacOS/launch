@@ -1,0 +1,14 @@
+#!/bin/zsh
+
+# This small Finder launcher starts the locally installed Electron runtime
+# independently, so closing a Terminal window never closes the tracker.
+launcher_dir="${0:A:h}"
+project_dir="${launcher_dir:h:h:h}"
+electron_app="${project_dir}/node_modules/electron/dist/Electron.app"
+
+if [[ ! -d "$electron_app" ]]; then
+  osascript -e 'display alert "Luxe Manhwa Tracker needs to be installed" message "Open Terminal in the project folder and run npm install once, then launch this app again." as critical'
+  exit 1
+fi
+
+open -n "$electron_app" --args "$project_dir"

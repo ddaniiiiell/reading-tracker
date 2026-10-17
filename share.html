@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="no-referrer">
+  <title>Shared Manhwa Tier List</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="header">
+      <div class="brand">
+        <h1>READING TRACKER</h1>
+        <p class="subtitle">Shared Tier List</p>
+      </div>
+      <a class="btn btn-secondary shared-home-link" href="./">Open Tracker</a>
+    </header>
+
+    <main class="shared-tier-view">
+      <div class="shared-tier-heading">
+        <p class="tier-eyebrow">A static snapshot</p>
+        <h2 id="shared-tier-title">Manhwa Tier List</h2>
+        <p>Click a title to open the reading link saved by the list's creator. Titles without a saved link are shown as text.</p>
+      </div>
+      <p id="shared-tier-message" class="tier-save-status" role="status" aria-live="polite"></p>
+      <div id="shared-tier-board" class="tier-board" aria-label="Shared tier list"></div>
+    </main>
+
+    <footer class="footer"><p>&copy; 2026 Luxe Noir. All rights reserved.</p></footer>
+  </div>
+  <script src="tier-share-codec.js"></script>
+  <script src="share.js"></script>
+</body>
+</html>

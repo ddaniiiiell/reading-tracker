@@ -12,10 +12,70 @@ let searchQuery = '';
 let currentView = 'grid'; // 'grid' | 'list'
 let isSavingData = false;
 let lastSavedDataJSON = '';
+let currentOfflineManhwaId = null;
+let currentReaderObjectUrls = [];
+let currentReaderManhwaId = null;
+let currentReaderFiles = [];
+let currentReaderChapter = null;
+let readerZoom = 50;
+let readerBlackout = false;
+const offlineDownloadQueue = {
+  jobs: [],
+  isProcessing: false
+};
 const STORAGE_KEY = 'luxe_manhwa_tracker_data_v6';
 const LEGACY_STORAGE_KEY = 'luxe_manhwa_tracker_data_v5';
+const DELETED_IDS_STORAGE_KEY = 'luxe_manhwa_tracker_deleted_ids_v1';
+let deletedManhwaIds = new Set();
+// Duplicate entries removed from the signed-in tracker. Keep filtering these IDs
+// so an older browser cache or repository snapshot cannot add them back to cloud sync.
+const RETIRED_DUPLICATE_IDS = new Set([
+  'manhwa_82', 'manhwa_113', 'manhwa_115', 'manhwa_127', 'manhwa_143',
+  'manhwa_187', 'manhwa_237', 'manhwa_238', 'manhwa_239', 'manhwa_241',
+  'manhwa_253'
+]);
+const OFFLINE_DB_NAME = 'luxe_manhwa_offline_library';
+const OFFLINE_DB_VERSION = 1;
+const OFFLINE_STORE_NAME = 'chapterFiles';
+const OFFLINE_DOWNLOAD_INTERVAL_MS = 750;
+const CONNECTOR_LOOKUP_INTERVAL_MS = 2_000;
+const OFFLINE_RETRY_LIMIT = 3;
+const OFFLINE_RETRY_BASE_DELAY_MS = 3_000;
+const OFFLINE_RATE_LIMIT_RETRY_BASE_DELAY_MS = 8_000;
+const CONNECTOR_QUEUE_CHAPTER_LIMIT = 20;
+const READER_DEFAULT_ZOOM = 50;
+const READER_MIN_ZOOM = 20;
+const READER_MAX_ZOOM = 200;
+const READER_ZOOM_STEP = 10;
 const FIREBASE_CONFIG_PATH = './firebase-config.js';
 const FIREBASE_SDK_VERSION = '10.12.5';
+const DOWNLOAD_CONNECTORS = [
+  {
+    id: 'asurascans',
+    label: 'AsuraScans',
+    supports: url => /^(?:www\.)?asurascans\.com$/i.test(url.hostname)
+      && /^\/comics\/[^/]+\/chapter\/[^/]+\/?$/i.test(url.pathname)
+  }
+];
+
+function getDownloadConnector(link) {
+  if (!link) return null;
+
+  try {
+    const url = new URL(link);
+    return DOWNLOAD_CONNECTORS.find(connector => connector.supports(url)) || null;
+  } catch {
+    return null;
+  }
+}
+
+function getLinkHost(link) {
+  try {
+    return new URL(link).hostname.replace(/^www\./i, '');
+  } catch {
+    return 'this link';
+  }
+}
 const cloudSync = {
   available: false,
   user: null,
@@ -2563,7 +2623,10 @@ const MOCK_DATA = [
 
 // Initialize application data
 async function initApp() {
-  manhwas = loadLocalManhwas();
+  loadDeletedManhwaIds();
+  manhwas = withoutDeletedManhwas(await loadLocalManhwas());
+  persistLocalData();
+  removeManhwasFromTierLists([...deletedManhwaIds]);
   
   const storedView = localStorage.getItem('luxe_manhwa_tracker_view');
   if (storedView) {
@@ -2584,32 +2647,54 @@ async function initApp() {
   await initCloudSync();
 }
 
-function loadLocalManhwas() {
+async function loadRepositoryManhwas() {
+  try {
+    const response = await fetch('./data/manhwas.json', { cache: 'no-store' });
+    if (!response.ok) return null;
+
+    const records = await response.json();
+    return Array.isArray(records) ? getCloudManhwas(records) : null;
+  } catch (error) {
+    console.info('Repository tracker snapshot is unavailable; using local data.', error);
+    return null;
+  }
+}
+
+async function loadLocalManhwas() {
   const storedData = localStorage.getItem(STORAGE_KEY);
   const legacyStoredData = localStorage.getItem(LEGACY_STORAGE_KEY);
+  const repositoryManhwas = await loadRepositoryManhwas();
+  let localManhwas;
+  let hasStoredLocalData = false;
 
   if (storedData) {
     try {
       const parsedManhwas = JSON.parse(storedData);
-      return Array.isArray(parsedManhwas) ? parsedManhwas : [...MOCK_DATA];
+      if (Array.isArray(parsedManhwas)) {
+        localManhwas = parsedManhwas;
+        hasStoredLocalData = true;
+      } else {
+        localManhwas = [...MOCK_DATA];
+      }
     } catch (e) {
       console.error("Error parsing stored manhwa data, fallback to mock data", e);
-      return [...MOCK_DATA];
+      localManhwas = [...MOCK_DATA];
     }
   } else if (legacyStoredData) {
     try {
-      const recoveredManhwas = mergeRecoveredData(JSON.parse(legacyStoredData));
-      persistLocalData(recoveredManhwas);
-      return recoveredManhwas;
+      localManhwas = mergeRecoveredData(JSON.parse(legacyStoredData));
+      hasStoredLocalData = true;
     } catch (e) {
       console.error("Error parsing legacy manhwa data, fallback to recovered data", e);
-      return [...MOCK_DATA];
+      localManhwas = [...MOCK_DATA];
     }
+  } else {
+    localManhwas = [...MOCK_DATA];
   }
 
-  const defaultManhwas = [...MOCK_DATA];
-  persistLocalData(defaultManhwas);
-  return defaultManhwas;
+  if (repositoryManhwas === null) return localManhwas;
+  if (!hasStoredLocalData) return repositoryManhwas;
+  return mergeRepositoryManhwas(localManhwas, repositoryManhwas);
 }
 
 function mergeRecoveredData(storedManhwas) {
@@ -2644,6 +2729,13 @@ async function initCloudSync() {
     cloudSync.available = true;
     updateCloudSyncUI('signed-out');
 
+    try {
+      await authModule.getRedirectResult(cloudSync.auth);
+    } catch (error) {
+      console.warn('Google redirect sign-in did not complete.', error);
+      updateCloudSyncUI('error', getCloudSignInErrorMessage(error));
+    }
+
     authModule.onAuthStateChanged(cloudSync.auth, async (user) => {
       if (!user) {
         stopTrackerSync();
@@ -2654,7 +2746,7 @@ async function initCloudSync() {
       }
 
       cloudSync.user = user;
-      updateCloudSyncUI('syncing');
+      updateCloudSyncUI('signed-in');
       await startTrackerSync(user);
     });
   } catch (error) {
@@ -2669,6 +2761,120 @@ function stopTrackerSync() {
     cloudSync.unsubscribe();
     cloudSync.unsubscribe = null;
   }
+  resetTierCloudSync();
+}
+
+function getCloudManhwas(records = manhwas) {
+  return withoutDeletedManhwas(records)
+    .map(({ offline, ...record }) => record);
+}
+
+function withoutDeletedManhwas(records) {
+  return records.filter(record => record && typeof record === 'object'
+    && !RETIRED_DUPLICATE_IDS.has(record.id)
+    && !deletedManhwaIds.has(record.id));
+}
+
+function loadDeletedManhwaIds() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(DELETED_IDS_STORAGE_KEY) || '[]');
+    deletedManhwaIds = new Set(Array.isArray(stored)
+      ? stored.filter(id => typeof id === 'string' && id.length < 200)
+      : []);
+  } catch (error) {
+    console.warn('Deleted-title history could not be read.', error);
+    deletedManhwaIds = new Set();
+  }
+}
+
+function persistDeletedManhwaIds() {
+  localStorage.setItem(DELETED_IDS_STORAGE_KEY, JSON.stringify([...deletedManhwaIds]));
+}
+
+function mergeDeletedManhwaIds(remoteIds) {
+  const remote = new Set(Array.isArray(remoteIds)
+    ? remoteIds.filter(id => typeof id === 'string' && id.length < 200)
+    : []);
+  const added = [...remote].filter(id => !deletedManhwaIds.has(id));
+  if (added.length) {
+    added.forEach(id => deletedManhwaIds.add(id));
+    persistDeletedManhwaIds();
+    manhwas = withoutDeletedManhwas(manhwas);
+    persistLocalData();
+    render();
+  }
+  return [...deletedManhwaIds].filter(id => !remote.has(id));
+}
+
+async function publishDeletedManhwaIds(ids) {
+  if (!cloudSync.trackerDocRef || !ids.length) return;
+  try {
+    await cloudSync.modules.firestoreModule.setDoc(cloudSync.trackerDocRef, {
+      deletedManhwaIds: cloudSync.modules.firestoreModule.arrayUnion(...ids)
+    }, { merge: true });
+  } catch (error) {
+    console.warn('Deleted titles are saved on this device, but could not sync yet.', error);
+  }
+}
+
+function getReadDateTimestamp(manhwa) {
+  const timestamp = Date.parse(manhwa?.lastReadDate || '');
+  return Number.isFinite(timestamp) ? timestamp : 0;
+}
+
+function getChapterNumber(manhwa) {
+  const chapter = Number(manhwa?.chapter);
+  return Number.isFinite(chapter) ? chapter : 0;
+}
+
+function mergeManhwaRecord(localManhwa, remoteManhwa) {
+  const localUpdatedAt = Date.parse(localManhwa.updatedAt || '');
+  const remoteUpdatedAt = Date.parse(remoteManhwa.updatedAt || '');
+  const localDate = getReadDateTimestamp(localManhwa);
+  const remoteDate = getReadDateTimestamp(remoteManhwa);
+  const localChapter = getChapterNumber(localManhwa);
+  const remoteChapter = getChapterNumber(remoteManhwa);
+  const hasLocalUpdateTime = Number.isFinite(localUpdatedAt);
+  const hasRemoteUpdateTime = Number.isFinite(remoteUpdatedAt);
+  const hasDifferentUpdateTimes = (hasLocalUpdateTime || hasRemoteUpdateTime)
+    && localUpdatedAt !== remoteUpdatedAt;
+  const preferLocal = hasDifferentUpdateTimes
+    ? (hasLocalUpdateTime ? localUpdatedAt : 0) > (hasRemoteUpdateTime ? remoteUpdatedAt : 0)
+    : localDate > remoteDate || (localDate === remoteDate && localChapter > remoteChapter);
+  const preferred = preferLocal ? localManhwa : remoteManhwa;
+  const other = preferLocal ? remoteManhwa : localManhwa;
+  const merged = {
+    ...other,
+    ...preferred,
+    chapter: Math.max(localChapter, remoteChapter),
+    lastReadDate: localDate >= remoteDate ? localManhwa.lastReadDate : remoteManhwa.lastReadDate
+  };
+
+  // Offline files only exist on the current device, so they never come from Firestore.
+  if (localManhwa.offline) {
+    merged.offline = localManhwa.offline;
+  } else {
+    delete merged.offline;
+  }
+
+  return merged;
+}
+
+function mergeCloudManhwas(localRecords, remoteRecords) {
+  const remoteById = new Map(withoutDeletedManhwas(remoteRecords)
+    .filter(record => record.id).map(record => [record.id, record]));
+  const merged = withoutDeletedManhwas(localRecords).filter(record => record.id).map(localManhwa => {
+    const remoteManhwa = remoteById.get(localManhwa.id);
+    remoteById.delete(localManhwa.id);
+    return remoteManhwa ? mergeManhwaRecord(localManhwa, remoteManhwa) : localManhwa;
+  });
+
+  return [...merged, ...getCloudManhwas([...remoteById.values()])];
+}
+
+function mergeRepositoryManhwas(localRecords, repositoryRecords) {
+  const localIds = new Set(localRecords.filter(record => record?.id).map(record => record.id));
+  return [...localRecords, ...repositoryRecords.filter(record => record?.id && !localIds.has(record.id))];
 }
 
 async function signInToCloud() {
@@ -2680,8 +2886,30 @@ async function signInToCloud() {
     await cloudSync.modules.authModule.signInWithPopup(cloudSync.auth, cloudSync.provider);
   } catch (error) {
     console.warn('Google sign-in failed.', error);
-    updateCloudSyncUI('signed-out');
+    updateCloudSyncUI('error', getCloudSignInErrorMessage(error));
   }
+}
+
+function getCloudSignInErrorMessage(error) {
+  const code = error?.code || '';
+
+  if (code === 'auth/operation-not-allowed') {
+    return 'Google sign-in is disabled in Firebase Authentication.';
+  }
+
+  if (code === 'auth/unauthorized-domain' || code === 'auth/app-not-authorized') {
+    return 'This app domain is not authorized for Firebase sign-in.';
+  }
+
+  if (code === 'auth/popup-blocked') {
+    return 'The Google sign-in window was blocked. Try again.';
+  }
+
+  if (code === 'auth/popup-closed-by-user') {
+    return 'Google sign-in was cancelled.';
+  }
+
+  return error?.message || 'Google sign-in could not be completed.';
 }
 
 async function signOutOfCloud() {
@@ -2689,6 +2917,9 @@ async function signOutOfCloud() {
 
   try {
     await cloudSync.modules.authModule.signOut(cloudSync.auth);
+    cloudSync.user = null;
+    cloudSync.trackerDocRef = null;
+    updateCloudSyncUI('signed-out');
   } catch (error) {
     console.warn('Google sign-out failed.', error);
   }
@@ -2704,31 +2935,51 @@ async function startTrackerSync(user) {
     const snapshot = await firestoreModule.getDoc(cloudSync.trackerDocRef);
     if (snapshot.exists()) {
       const data = snapshot.data();
+      const missingDeletions = mergeDeletedManhwaIds(data.deletedManhwaIds);
+      if (missingDeletions.length) await publishDeletedManhwaIds(missingDeletions);
       if (Array.isArray(data.manhwas)) {
+        const remoteManhwas = data.manhwas;
+        const mergedManhwas = mergeCloudManhwas(manhwas, remoteManhwas);
+        const needsCloudUpdate = JSON.stringify(getCloudManhwas(mergedManhwas)) !== JSON.stringify(remoteManhwas);
         cloudSync.isApplyingRemote = true;
-        manhwas = data.manhwas;
+        manhwas = mergedManhwas;
         persistLocalData();
         render();
         cloudSync.isApplyingRemote = false;
+
+        if (needsCloudUpdate) await saveData();
       }
+      syncTierListsFromCloud(data.tierLists);
+      removeManhwasFromTierLists([...deletedManhwaIds]);
     } else {
+      await publishDeletedManhwaIds([...deletedManhwaIds]);
       await saveData();
+      saveTierListsToCloud();
     }
 
-    cloudSync.unsubscribe = firestoreModule.onSnapshot(cloudSync.trackerDocRef, (snapshot) => {
-      if (!snapshot.exists() || isSavingData) return;
+    cloudSync.unsubscribe = firestoreModule.onSnapshot(cloudSync.trackerDocRef, async (snapshot) => {
+      if (!snapshot.exists()) return;
 
       const data = snapshot.data();
+      const missingDeletions = mergeDeletedManhwaIds(data.deletedManhwaIds);
+      if (missingDeletions.length) publishDeletedManhwaIds(missingDeletions);
+      syncTierListsFromCloud(data.tierLists);
+      removeManhwasFromTierLists([...deletedManhwaIds]);
+      if (isSavingData) return;
       if (!Array.isArray(data.manhwas)) return;
 
-      const incomingJSON = JSON.stringify(data.manhwas);
-      if (incomingJSON === JSON.stringify(manhwas)) return;
+      const remoteManhwas = data.manhwas;
+      const mergedManhwas = mergeCloudManhwas(manhwas, remoteManhwas);
+      const mergedCloudJSON = JSON.stringify(getCloudManhwas(mergedManhwas));
+      if (mergedCloudJSON === JSON.stringify(remoteManhwas) && JSON.stringify(mergedManhwas) === JSON.stringify(manhwas)) return;
 
       cloudSync.isApplyingRemote = true;
-      manhwas = data.manhwas;
+      manhwas = mergedManhwas;
       persistLocalData();
       render();
       cloudSync.isApplyingRemote = false;
+
+      if (mergedCloudJSON !== JSON.stringify(remoteManhwas)) await saveData();
     });
 
     updateCloudSyncUI('synced');
@@ -2736,11 +2987,11 @@ async function startTrackerSync(user) {
     console.warn('Cloud sync initialization failed.', error);
     cloudSync.trackerDocRef = null;
     stopTrackerSync();
-    updateCloudSyncUI('signed-out');
+    updateCloudSyncUI(cloudSync.user ? 'signed-in' : 'signed-out');
   }
 }
 
-function updateCloudSyncUI(state) {
+function updateCloudSyncUI(state, message = '') {
   const button = document.getElementById('cloud-sync-btn');
   const label = document.getElementById('cloud-sync-label');
   if (!button || !label) return;
@@ -2755,10 +3006,17 @@ function updateCloudSyncUI(state) {
   } else if (state === 'signed-out') {
     label.textContent = 'Sign In';
     button.title = 'Sign in with Google to sync with Firebase.';
+  } else if (state === 'signed-in') {
+    button.classList.add('active');
+    label.textContent = 'Signed In';
+    button.title = cloudSync.user ? `Signed in as ${cloudSync.user.email}` : 'Signed in with Google.';
   } else if (state === 'syncing') {
     button.disabled = true;
     label.textContent = 'Syncing';
     button.title = 'Connecting to Firebase.';
+  } else if (state === 'error') {
+    label.textContent = 'Sign In Failed';
+    button.title = message;
   } else if (state === 'synced') {
     button.classList.add('active');
     label.textContent = 'Cloud On';
@@ -2779,13 +3037,916 @@ async function saveData() {
   isSavingData = true;
   try {
     await cloudSync.modules.firestoreModule.setDoc(cloudSync.trackerDocRef, {
-      manhwas,
+      manhwas: getCloudManhwas(),
       updatedAt: cloudSync.modules.firestoreModule.serverTimestamp()
-    });
+    }, { merge: true });
   } catch (error) {
     console.warn('Could not save to Firestore; changes are saved in this browser only.', error);
   } finally {
     isSavingData = false;
+  }
+}
+
+function openOfflineDb() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(OFFLINE_DB_NAME, OFFLINE_DB_VERSION);
+
+    request.onupgradeneeded = () => {
+      const db = request.result;
+      if (!db.objectStoreNames.contains(OFFLINE_STORE_NAME)) {
+        const store = db.createObjectStore(OFFLINE_STORE_NAME, { keyPath: 'id' });
+        store.createIndex('manhwaId', 'manhwaId', { unique: false });
+      }
+    };
+
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function withOfflineStore(mode, callback) {
+  const db = await openOfflineDb();
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(OFFLINE_STORE_NAME, mode);
+    const store = transaction.objectStore(OFFLINE_STORE_NAME);
+    const result = callback(store);
+
+    transaction.oncomplete = () => {
+      db.close();
+      resolve(result);
+    };
+    transaction.onerror = () => {
+      db.close();
+      reject(transaction.error);
+    };
+    transaction.onabort = () => {
+      db.close();
+      reject(transaction.error);
+    };
+  });
+}
+
+function requestToPromise(request) {
+  return new Promise((resolve, reject) => {
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+function getOfflineItemCount(manhwa) {
+  return manhwa?.offline?.items?.length || 0;
+}
+
+function getOfflineArchiveSize(manhwa) {
+  return (manhwa?.offline?.items || []).reduce((total, item) => total + (item.size || 0), 0);
+}
+
+function formatBytes(bytes) {
+  if (!bytes) return '0 KB';
+  const units = ['B', 'KB', 'MB', 'GB'];
+  let size = bytes;
+  let unitIndex = 0;
+
+  while (size >= 1024 && unitIndex < units.length - 1) {
+    size /= 1024;
+    unitIndex += 1;
+  }
+
+  return `${size.toFixed(size >= 10 || unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
+}
+
+function buildOfflineFileId(manhwaId, index = 0) {
+  return `${manhwaId}_offline_${Date.now()}_${index}_${Math.random().toString(16).slice(2)}`;
+}
+
+function base64ImageToBlob(data, type) {
+  const decoded = atob(data);
+  const bytes = new Uint8Array(decoded.length);
+  for (let index = 0; index < decoded.length; index += 1) {
+    bytes[index] = decoded.charCodeAt(index);
+  }
+  return new Blob([bytes], { type });
+}
+
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function isRetryableDownloadError(error) {
+  const message = String(error?.message || '');
+  const status = message.match(/HTTP\s+(\d{3})/i)?.[1];
+
+  if (status) {
+    const code = Number(status);
+    return code === 408 || code === 425 || code === 429 || code >= 500;
+  }
+
+  return /timed out|network|fetch failed|socket|connection/i.test(message);
+}
+
+function getRetryDelay(error, attempt) {
+  const isRateLimited = /HTTP\s+429/i.test(String(error?.message || ''));
+  const baseDelay = isRateLimited ? OFFLINE_RATE_LIMIT_RETRY_BASE_DELAY_MS : OFFLINE_RETRY_BASE_DELAY_MS;
+  return Math.min(baseDelay * (2 ** (attempt - 1)), 60_000);
+}
+
+async function retryOfflineOperation(operation, onRetry) {
+  let attempt = 0;
+
+  while (true) {
+    try {
+      return await operation();
+    } catch (error) {
+      if (!isRetryableDownloadError(error) || attempt >= OFFLINE_RETRY_LIMIT) {
+        throw error;
+      }
+
+      attempt += 1;
+      const delay = getRetryDelay(error, attempt);
+      onRetry?.({ attempt, delay, error });
+      await wait(delay);
+    }
+  }
+}
+
+async function fetchOfflineImage(url) {
+  if (window.electronOffline?.fetchImage) {
+    const result = await window.electronOffline.fetchImage(url);
+    return base64ImageToBlob(result.data, result.type);
+  }
+
+  const response = await fetch(url, { mode: 'cors' });
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+  const blob = await response.blob();
+  if (!blob.type.startsWith('image/')) {
+    throw new Error('URL did not return an image.');
+  }
+  return blob;
+}
+
+function sortOfflineItems(items) {
+  return [...items].sort((a, b) => {
+    const orderA = Number.isFinite(a.order) ? a.order : 0;
+    const orderB = Number.isFinite(b.order) ? b.order : 0;
+    if (orderA !== orderB) return orderA - orderB;
+    return (a.name || '').localeCompare(b.name || '');
+  });
+}
+
+async function putOfflineFile(record) {
+  await withOfflineStore('readwrite', (store) => {
+    store.put(record);
+  });
+}
+
+async function getOfflineFiles(manhwaId) {
+  const records = await withOfflineStore('readonly', (store) => {
+    const index = store.index('manhwaId');
+    return requestToPromise(index.getAll(manhwaId));
+  });
+
+  return sortOfflineItems(records || []);
+}
+
+async function deleteOfflineFiles(manhwaId) {
+  const files = await getOfflineFiles(manhwaId);
+  offlineDownloadQueue.jobs = offlineDownloadQueue.jobs.filter(job => job.manhwaId !== manhwaId);
+  if (!files.length) return;
+
+  await withOfflineStore('readwrite', (store) => {
+    files.forEach(file => store.delete(file.id));
+  });
+}
+
+function getStoredChapter(item, fallbackChapter) {
+  const chapter = Number(item.chapter);
+  return Number.isFinite(chapter) ? chapter : fallbackChapter;
+}
+
+function isOfflineChapterSavedOrQueued(manhwa, chapter) {
+  const fallbackChapter = manhwa.offline?.chapter || manhwa.chapter || 0;
+  const hasSavedPages = (manhwa.offline?.items || []).some(item => {
+    return getStoredChapter(item, fallbackChapter) === chapter;
+  });
+
+  if (hasSavedPages) return true;
+
+  return offlineDownloadQueue.jobs.some(job => {
+    return job.manhwaId === manhwa.id
+      && job.status !== 'failed'
+      && getStoredChapter(job, fallbackChapter) === chapter;
+  });
+}
+
+async function deleteOfflineChapter(manhwaId, chapter) {
+  const manhwa = manhwas.find(m => m.id === manhwaId);
+  if (!manhwa) return;
+
+  const fallbackChapter = manhwa.offline?.chapter || manhwa.chapter || 0;
+  const files = await getOfflineFiles(manhwaId);
+  const filesToDelete = files.filter(file => getStoredChapter(file, fallbackChapter) === chapter);
+
+  if (filesToDelete.length) {
+    await withOfflineStore('readwrite', store => {
+      filesToDelete.forEach(file => store.delete(file.id));
+    });
+  }
+
+  offlineDownloadQueue.jobs = offlineDownloadQueue.jobs.filter(job => {
+    return job.manhwaId !== manhwaId || getStoredChapter(job, fallbackChapter) !== chapter;
+  });
+
+  const remainingItems = (manhwa.offline?.items || []).filter(item => {
+    return getStoredChapter(item, fallbackChapter) !== chapter;
+  });
+  updateOfflineMetadata(manhwaId, remainingItems);
+  renderOfflineDownloadQueue();
+}
+
+function updateOfflineMetadata(manhwaId, items) {
+  const sortedItems = sortOfflineItems(items);
+  manhwas = manhwas.map(m => {
+    if (m.id !== manhwaId) return m;
+
+    if (sortedItems.length === 0) {
+      const { offline, ...withoutOffline } = m;
+      return withoutOffline;
+    }
+
+    return {
+      ...m,
+      offline: {
+        chapter: m.chapter || 0,
+        savedAt: new Date().toISOString(),
+        items: sortedItems.map(({ id, name, type, size, order, chapter, source }) => ({
+          id,
+          name,
+          type,
+          size,
+          order,
+          chapter,
+          source
+        }))
+      }
+    };
+  });
+
+  saveData();
+  render();
+  if (currentOfflineManhwaId === manhwaId) {
+    renderOfflineManager(manhwaId);
+  }
+}
+
+async function addOfflineFilesFromInput(manhwaId, files) {
+  const allowedFiles = files.filter(file => file.type.startsWith('image/') || file.type === 'application/pdf');
+  if (!allowedFiles.length) {
+    alert('Choose image files or PDFs to save for offline reading.');
+    return;
+  }
+
+  const manhwa = manhwas.find(m => m.id === manhwaId);
+  if (!manhwa) return;
+
+  const existingItems = manhwa.offline?.items || [];
+  const startOrder = existingItems.length;
+  const newItems = allowedFiles.map((file, index) => ({
+    id: buildOfflineFileId(manhwaId, index),
+    manhwaId,
+    name: file.name || `Page ${startOrder + index + 1}`,
+    type: file.type || 'application/octet-stream',
+    size: file.size || 0,
+    order: startOrder + index,
+    chapter: Number(manhwa.chapter) || 0,
+    source: 'file',
+    blob: file
+  }));
+
+  await Promise.all(newItems.map(item => putOfflineFile(item)));
+  updateOfflineMetadata(manhwaId, [...existingItems, ...newItems]);
+}
+
+async function addOfflineFilesFromUrls(manhwaId, urls, options = {}) {
+  const manhwa = manhwas.find(m => m.id === manhwaId);
+  if (!manhwa) return;
+
+  const validUrls = urls
+    .map(url => url.trim())
+    .filter(Boolean);
+
+  if (!validUrls.length) {
+    alert('Paste at least one direct image URL.');
+    return;
+  }
+
+  const chapter = Number.isFinite(options.chapter) ? options.chapter : (Number(manhwa.chapter) || 0);
+  const namePrefix = options.namePrefix ? `${options.namePrefix} - ` : '';
+
+  const queuedJobs = validUrls.map((url, index) => {
+    let name = `Queued image ${index + 1}`;
+    try {
+      const parsedUrl = new URL(url);
+      name = namePrefix + (parsedUrl.pathname.split('/').filter(Boolean).pop() || name);
+    } catch (error) {
+      // Keep the fallback name and let the downloader mark the URL as failed.
+    }
+
+    return {
+      id: buildOfflineFileId(manhwaId, offlineDownloadQueue.jobs.length + index),
+      manhwaId,
+      url,
+      name,
+      status: 'queued',
+      progress: 0,
+      chapter,
+      error: ''
+    };
+  });
+
+  offlineDownloadQueue.jobs.push(...queuedJobs);
+  renderOfflineDownloadQueue();
+  processOfflineDownloadQueue();
+}
+
+function getConnectorChapterRange() {
+  const start = Number(document.getElementById('asura-start-chapter').value);
+  const end = Number(document.getElementById('asura-end-chapter').value);
+
+  if (!Number.isInteger(start) || !Number.isInteger(end) || start < 0 || end < 0) {
+    return null;
+  }
+
+  const first = Math.min(start, end);
+  const last = Math.max(start, end);
+  if (last - first >= CONNECTOR_QUEUE_CHAPTER_LIMIT) {
+    return { error: `Queue up to ${CONNECTOR_QUEUE_CHAPTER_LIMIT} chapters at a time.` };
+  }
+
+  return { start: first, end: last };
+}
+
+function buildAsuraChapterUrl(template, chapter) {
+  const url = new URL(template);
+  const segments = url.pathname.split('/');
+  const lastIndex = segments[segments.length - 1] ? segments.length - 1 : segments.length - 2;
+  const lastSegment = segments[lastIndex];
+  const match = lastSegment.match(/^(chapter[-_])?(\d+)$/i);
+
+  if (!match) {
+    throw new Error('The AsuraScans URL must end with a chapter number.');
+  }
+
+  segments[lastIndex] = `${match[1] || ''}${chapter}`;
+  url.pathname = segments.join('/');
+  return url.href;
+}
+
+async function queueAsuraChapterRange(manhwaId) {
+  const button = document.getElementById('asura-queue-btn');
+  const manhwa = manhwas.find(m => m.id === manhwaId);
+  const connector = getDownloadConnector(manhwa?.link);
+  const chapterUrl = manhwa?.link || '';
+  const range = getConnectorChapterRange();
+
+  if (!connector || connector.id !== 'asurascans' || manhwa?.linkStatus === 'broken') {
+    alert('This manhwa does not have an available chapter download connector.');
+    return;
+  }
+
+  if (!range || range.error) {
+    alert(range?.error || 'Choose a valid AsuraScans chapter range.');
+    return;
+  }
+
+  if (!window.electronOffline?.resolveAsuraChapter) {
+    alert(`${connector.label} chapter downloads are available in the Electron desktop app.`);
+    return;
+  }
+
+  button.disabled = true;
+
+  try {
+    const failedChapters = [];
+    const skippedChapters = [];
+    let queuedChapters = 0;
+
+    for (let chapter = range.start; chapter <= range.end; chapter += 1) {
+      if (isOfflineChapterSavedOrQueued(manhwa, chapter)) {
+        skippedChapters.push(chapter);
+        continue;
+      }
+
+      button.textContent = `Finding Ch. ${chapter}...`;
+      const url = buildAsuraChapterUrl(chapterUrl, chapter);
+
+      try {
+        const { pages } = await retryOfflineOperation(
+          () => window.electronOffline.resolveAsuraChapter(url),
+          ({ attempt, delay }) => {
+            button.textContent = `Retrying Ch. ${chapter} in ${Math.ceil(delay / 1000)}s (${attempt}/${OFFLINE_RETRY_LIMIT})`;
+          }
+        );
+        await addOfflineFilesFromUrls(manhwaId, pages, {
+          chapter,
+          namePrefix: `Ch. ${chapter}`
+        });
+        queuedChapters += 1;
+      } catch (error) {
+        console.warn(`Could not resolve ${connector.label} Chapter ${chapter}.`, error);
+        failedChapters.push(chapter);
+      }
+
+      if (chapter < range.end) await wait(CONNECTOR_LOOKUP_INTERVAL_MS);
+    }
+
+    document.getElementById('asura-start-chapter').value = String(range.end + 1);
+    document.getElementById('asura-end-chapter').value = String(range.end + CONNECTOR_QUEUE_CHAPTER_LIMIT);
+
+    if (skippedChapters.length || failedChapters.length) {
+      const summary = [`Queued ${queuedChapters} new chapter${queuedChapters === 1 ? '' : 's'}.`];
+      if (skippedChapters.length) {
+        summary.push(`Skipped already downloaded or queued: ${skippedChapters.join(', ')}.`);
+      }
+      if (failedChapters.length) {
+        summary.push(`Could not find: ${failedChapters.join(', ')}. Try those again later.`);
+      }
+      alert(summary.join(' '));
+    }
+  } catch (error) {
+    console.warn(`Could not resolve ${connector.label} chapter.`, error);
+    alert(error?.message || 'Could not find the chapter pages.');
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Queue Chapters';
+  }
+}
+
+function renderOfflineDownloadQueue() {
+  const queueEl = document.getElementById('offline-download-queue');
+  if (!queueEl) return;
+
+  const manhwa = manhwas.find(m => m.id === currentOfflineManhwaId);
+  if (!manhwa) {
+    queueEl.innerHTML = '';
+    return;
+  }
+
+  const fallbackChapter = manhwa.offline?.chapter || manhwa.chapter || 0;
+  const groups = new Map();
+  offlineDownloadQueue.jobs
+    .filter(job => job.manhwaId === currentOfflineManhwaId)
+    .forEach(job => {
+      const chapter = getStoredChapter(job, fallbackChapter);
+      if (!groups.has(chapter)) groups.set(chapter, []);
+      groups.get(chapter).push(job);
+    });
+
+  const visibleGroups = [...groups.entries()]
+    .filter(([, jobs]) => jobs.some(job => job.status !== 'completed'))
+    .sort(([chapterA], [chapterB]) => chapterA - chapterB);
+
+  if (!visibleGroups.length) {
+    queueEl.innerHTML = '';
+    return;
+  }
+
+  queueEl.innerHTML = visibleGroups.map(([chapter, jobs]) => {
+    const completed = jobs.filter(job => job.status === 'completed').length;
+    const downloading = jobs.filter(job => job.status === 'downloading').length;
+    const failedJobs = jobs.filter(job => job.status === 'failed');
+    const queued = jobs.filter(job => job.status === 'queued').length;
+    const retryingJob = jobs.find(job => job.status === 'downloading' && job.error);
+    const status = failedJobs.length ? 'failed' : (downloading ? 'downloading' : 'queued');
+    const detail = failedJobs.length
+      ? `${completed}/${jobs.length} pages saved · ${failedJobs[0].error || 'Download failed'}`
+      : retryingJob
+        ? `${completed}/${jobs.length} pages saved · ${retryingJob.error}`
+      : `${completed}/${jobs.length} pages saved${downloading ? ' · Downloading' : queued ? ' · Queued' : ''}`;
+
+    return `
+    <div class="offline-queue-row status-${escapeHTML(status)}">
+      <div>
+        <span class="offline-file-name">Chapter ${escapeHTML(String(chapter))}</span>
+        <span class="offline-file-meta">${escapeHTML(detail)}</span>
+      </div>
+      <div class="offline-queue-actions">
+        <span class="offline-queue-progress">${completed}/${jobs.length}</span>
+        ${failedJobs.length ? `<button class="btn-icon delete-failed-chapter-btn" type="button" data-chapter="${escapeHTML(String(chapter))}" title="Delete failed chapter download" aria-label="Delete failed chapter download">×</button>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+
+  queueEl.querySelectorAll('.delete-failed-chapter-btn').forEach(button => {
+    button.addEventListener('click', async () => {
+      const chapter = Number(button.getAttribute('data-chapter'));
+      if (Number.isFinite(chapter)) {
+        await deleteOfflineChapter(currentOfflineManhwaId, chapter);
+      }
+    });
+  });
+}
+
+async function processOfflineDownloadQueue() {
+  if (offlineDownloadQueue.isProcessing) return;
+
+  const nextJob = offlineDownloadQueue.jobs.find(job => job.status === 'queued');
+  if (!nextJob) {
+    renderOfflineDownloadQueue();
+    return;
+  }
+
+  offlineDownloadQueue.isProcessing = true;
+  await runOfflineDownloadJob(nextJob);
+
+  if (offlineDownloadQueue.jobs.some(job => job.status === 'queued')) {
+    await wait(OFFLINE_DOWNLOAD_INTERVAL_MS);
+  }
+  offlineDownloadQueue.isProcessing = false;
+
+  processOfflineDownloadQueue();
+}
+
+async function runOfflineDownloadJob(job) {
+  job.status = 'downloading';
+  job.progress = 10;
+  renderOfflineDownloadQueue();
+
+  try {
+    const parsedUrl = new URL(job.url);
+    job.progress = 55;
+    renderOfflineDownloadQueue();
+
+    const blob = await retryOfflineOperation(
+      () => fetchOfflineImage(parsedUrl.href),
+      ({ attempt, delay, error }) => {
+        job.status = 'downloading';
+        job.error = `${error?.message || 'Download failed'} Retrying in ${Math.ceil(delay / 1000)}s (${attempt}/${OFFLINE_RETRY_LIMIT}).`;
+        renderOfflineDownloadQueue();
+      }
+    );
+
+    const manhwa = manhwas.find(m => m.id === job.manhwaId);
+    const existingItems = manhwa?.offline?.items || [];
+    const record = {
+      id: job.id,
+      manhwaId: job.manhwaId,
+      name: job.name,
+      type: blob.type,
+      size: blob.size || 0,
+      order: existingItems.length,
+      chapter: job.chapter,
+      source: parsedUrl.href,
+      blob
+    };
+
+    if (!offlineDownloadQueue.jobs.some(candidate => candidate.id === job.id)) return;
+    await putOfflineFile(record);
+    job.status = 'completed';
+    job.progress = 100;
+    job.error = '';
+    updateOfflineMetadata(job.manhwaId, [...existingItems, record]);
+  } catch (error) {
+    console.warn('Could not save offline image URL.', job.url, error);
+    job.status = 'failed';
+    job.progress = 100;
+    job.error = error?.message || 'Download failed';
+    renderOfflineDownloadQueue();
+  }
+}
+
+function openOfflineManager(manhwaId) {
+  currentOfflineManhwaId = manhwaId;
+  const modal = document.getElementById('offline-modal');
+  modal.classList.add('active');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  renderOfflineManager(manhwaId);
+}
+
+function closeOfflineManager() {
+  currentOfflineManhwaId = null;
+  const modal = document.getElementById('offline-modal');
+  modal.classList.remove('active');
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+  document.getElementById('asura-chapter-url').value = '';
+  document.getElementById('asura-start-chapter').value = '';
+  document.getElementById('asura-end-chapter').value = '';
+}
+
+function renderOfflineManager(manhwaId) {
+  const manhwa = manhwas.find(m => m.id === manhwaId);
+  if (!manhwa) return;
+
+  const title = document.getElementById('offline-modal-title');
+  const summary = document.getElementById('offline-summary');
+  const fileList = document.getElementById('offline-file-list');
+  const readButton = document.getElementById('offline-read-btn');
+  const clearButton = document.getElementById('offline-clear-btn');
+  const items = sortOfflineItems(manhwa.offline?.items || []);
+  const totalSize = items.reduce((total, item) => total + (item.size || 0), 0);
+
+  title.textContent = `${manhwa.title} Offline`;
+  renderDownloadConnector(manhwa);
+  renderOfflineDownloadQueue();
+  renderOfflineMissingChapters(manhwa);
+  summary.innerHTML = `
+    <div class="offline-summary-item">
+      <span class="offline-summary-label">Chapter</span>
+      <span class="offline-summary-value">Ch. ${manhwa.offline?.chapter || manhwa.chapter || 0}</span>
+    </div>
+    <div class="offline-summary-item">
+      <span class="offline-summary-label">Pages</span>
+      <span class="offline-summary-value">${items.length}</span>
+    </div>
+    <div class="offline-summary-item">
+      <span class="offline-summary-label">Storage</span>
+      <span class="offline-summary-value">${formatBytes(totalSize)}</span>
+    </div>
+  `;
+
+  readButton.disabled = items.length === 0;
+  clearButton.disabled = items.length === 0;
+
+  if (!items.length) {
+    fileList.innerHTML = '<div class="offline-empty">No offline files saved yet.</div>';
+    return;
+  }
+
+  const fallbackChapter = manhwa.offline?.chapter || manhwa.chapter || 0;
+  const chapterGroups = new Map();
+  items.forEach(item => {
+    const chapter = getStoredChapter(item, fallbackChapter);
+    if (!chapterGroups.has(chapter)) chapterGroups.set(chapter, []);
+    chapterGroups.get(chapter).push(item);
+  });
+
+  fileList.innerHTML = [...chapterGroups.entries()].sort(([chapterA], [chapterB]) => chapterA - chapterB).map(([chapter, chapterItems]) => {
+    const size = chapterItems.reduce((total, item) => total + (item.size || 0), 0);
+    return `
+    <div class="offline-file-row" data-offline-chapter="${escapeHTML(String(chapter))}">
+      <div>
+        <span class="offline-file-name">Chapter ${escapeHTML(String(chapter))}</span>
+        <span class="offline-file-meta">${chapterItems.length} page${chapterItems.length === 1 ? '' : 's'} · ${formatBytes(size)}</span>
+      </div>
+      <button class="btn-icon delete-offline-chapter-btn" type="button" title="Delete downloaded chapter" aria-label="Delete downloaded chapter">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="3 6 5 6 21 6"></polyline>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        </svg>
+      </button>
+    </div>`;
+  }).join('');
+
+  fileList.querySelectorAll('.delete-offline-chapter-btn').forEach(button => {
+    button.addEventListener('click', async (event) => {
+      const row = event.target.closest('.offline-file-row');
+      const chapter = Number(row?.getAttribute('data-offline-chapter'));
+      if (Number.isFinite(chapter) && confirm(`Delete downloaded Chapter ${chapter} from this device?`)) {
+        await deleteOfflineChapter(manhwaId, chapter);
+      }
+    });
+  });
+}
+
+function getDefaultQueueStartChapter(manhwa) {
+  const currentChapter = Math.floor(Number(manhwa.chapter) || 0);
+  return manhwa.status === 'plan-to-read' ? 1 : currentChapter + 1;
+}
+
+function renderDownloadConnector(manhwa) {
+  const controls = document.getElementById('connector-download-controls');
+  const status = document.getElementById('connector-download-status');
+  const sourceLabel = document.getElementById('connector-source-label');
+  const help = document.getElementById('connector-download-help');
+  const button = document.getElementById('asura-queue-btn');
+  const input = document.getElementById('asura-chapter-url');
+  const startInput = document.getElementById('asura-start-chapter');
+  const endInput = document.getElementById('asura-end-chapter');
+
+  const connector = getDownloadConnector(manhwa.link);
+  const site = getLinkHost(manhwa.link);
+  const hasDesktopConnector = connector?.id === 'asurascans' && Boolean(window.electronOffline?.resolveAsuraChapter);
+
+  controls.hidden = !hasDesktopConnector;
+  status.classList.toggle('available', hasDesktopConnector);
+  status.classList.toggle('unavailable', !hasDesktopConnector);
+
+  if (!manhwa.link) {
+    status.textContent = 'Unavailable: add a chapter link to use a site download connector.';
+    return;
+  }
+
+  if (manhwa.linkStatus === 'broken') {
+    status.textContent = `Unavailable: ${site} is currently marked as unavailable.`;
+    return;
+  }
+
+  if (!connector) {
+    status.textContent = `Unavailable: ${site} does not have a download connector yet.`;
+    return;
+  }
+
+  if (!hasDesktopConnector) {
+    status.textContent = `${connector.label} is supported in the Electron desktop app.`;
+    return;
+  }
+
+  status.textContent = `${connector.label} connector is ready.`;
+  sourceLabel.textContent = `${connector.label} tracked chapter URL`;
+  input.value = manhwa.link;
+  help.textContent = `Queue up to ${CONNECTOR_QUEUE_CHAPTER_LIMIT} consecutive ${connector.label} chapters. Change the tracked chapter link to switch sources.`;
+  button.textContent = 'Queue Chapters';
+
+  if (!startInput.value || !endInput.value) {
+    const startChapter = getDefaultQueueStartChapter(manhwa);
+    startInput.value = String(startChapter);
+    endInput.value = String(startChapter + CONNECTOR_QUEUE_CHAPTER_LIMIT - 1);
+  }
+}
+
+function getOfflineChapterNumbers(files, fallbackChapter) {
+  return [...new Set(files.map(file => Number.isFinite(file.chapter) ? file.chapter : fallbackChapter))]
+    .sort((a, b) => a - b);
+}
+
+function formatChapterRanges(chapters) {
+  const ranges = [];
+  let start = chapters[0];
+  let end = start;
+
+  chapters.slice(1).forEach(chapter => {
+    if (chapter === end + 1) {
+      end = chapter;
+      return;
+    }
+
+    ranges.push(start === end ? String(start) : `${start}-${end}`);
+    start = chapter;
+    end = chapter;
+  });
+
+  if (start !== undefined) {
+    ranges.push(start === end ? String(start) : `${start}-${end}`);
+  }
+
+  return ranges.join(', ');
+}
+
+function renderOfflineMissingChapters(manhwa) {
+  const panel = document.getElementById('offline-missing-chapters');
+  if (!panel) return;
+
+  const fallbackChapter = manhwa.offline?.chapter || manhwa.chapter || 0;
+  const downloadedChapters = [...new Set((manhwa.offline?.items || [])
+    .map(item => getStoredChapter(item, fallbackChapter))
+    .filter(chapter => Number.isInteger(chapter) && chapter > 0))]
+    .sort((a, b) => a - b);
+
+  if (downloadedChapters.length < 2) {
+    panel.classList.remove('is-complete');
+    panel.innerHTML = '';
+    return;
+  }
+
+  const downloadedSet = new Set(downloadedChapters);
+  const missingChapters = [];
+  for (let chapter = downloadedChapters[0]; chapter <= downloadedChapters.at(-1); chapter += 1) {
+    if (!downloadedSet.has(chapter)) missingChapters.push(chapter);
+  }
+
+  const span = `${downloadedChapters[0]}-${downloadedChapters.at(-1)}`;
+  if (!missingChapters.length) {
+    panel.classList.add('is-complete');
+    panel.innerHTML = `<span class="offline-missing-label">Downloaded span ${escapeHTML(span)}</span><span class="offline-missing-complete">No skipped chapters</span>`;
+    return;
+  }
+
+  panel.classList.remove('is-complete');
+  panel.innerHTML = `<span class="offline-missing-label">Skipped in ${escapeHTML(span)}</span><span class="offline-missing-list">Ch. ${escapeHTML(formatChapterRanges(missingChapters))}</span>`;
+}
+
+function renderOfflineReaderChapter() {
+  const manhwa = manhwas.find(m => m.id === currentReaderManhwaId);
+  if (!manhwa || currentReaderChapter === null) return;
+
+  currentReaderObjectUrls.forEach(url => URL.revokeObjectURL(url));
+  currentReaderObjectUrls = [];
+
+  const title = document.getElementById('offline-reader-title');
+  const pages = document.getElementById('offline-reader-pages');
+  const chapterFiles = currentReaderFiles.filter(file => {
+    const chapter = Number.isFinite(file.chapter) ? file.chapter : (manhwa.offline?.chapter || manhwa.chapter || 0);
+    return chapter === currentReaderChapter;
+  });
+
+  title.textContent = `Ch ${currentReaderChapter}`;
+  pages.innerHTML = chapterFiles.map((file, index) => {
+    const url = URL.createObjectURL(file.blob);
+    currentReaderObjectUrls.push(url);
+
+    if (file.type === 'application/pdf') {
+      return `<object class="offline-pdf-page" data="${url}" type="application/pdf" aria-label="${escapeHTML(file.name)}"></object>`;
+    }
+
+    return `<img src="${url}" alt="${escapeHTML(file.name || `Page ${index + 1}`)}" loading="lazy">`;
+  }).join('');
+
+  pages.scrollTop = 0;
+  updateReaderControls();
+}
+
+function updateReaderControls() {
+  const manhwa = manhwas.find(m => m.id === currentReaderManhwaId);
+  if (!manhwa) return;
+
+  const chapters = getOfflineChapterNumbers(currentReaderFiles, manhwa.offline?.chapter || manhwa.chapter || 0);
+  const chapterIndex = chapters.indexOf(currentReaderChapter);
+  document.getElementById('reader-prev-chapter-btn').disabled = chapterIndex <= 0;
+  document.getElementById('reader-next-chapter-btn').disabled = chapterIndex === -1 || chapterIndex >= chapters.length - 1;
+  document.getElementById('reader-zoom-out-btn').disabled = readerZoom <= READER_MIN_ZOOM;
+  document.getElementById('reader-zoom-in-btn').disabled = readerZoom >= READER_MAX_ZOOM;
+
+  const blackoutButton = document.getElementById('reader-blackout-btn');
+  blackoutButton.setAttribute('aria-pressed', String(readerBlackout));
+  blackoutButton.title = readerBlackout ? 'Exit blackout mode' : 'Enter blackout mode';
+
+  const modal = document.getElementById('offline-reader-modal');
+  const pages = document.getElementById('offline-reader-pages');
+  modal.classList.toggle('blackout-mode', readerBlackout);
+  pages.style.setProperty('--reader-zoom', String(readerZoom / 100));
+}
+
+function changeOfflineReaderChapter(direction) {
+  const manhwa = manhwas.find(m => m.id === currentReaderManhwaId);
+  if (!manhwa) return;
+
+  const chapters = getOfflineChapterNumbers(currentReaderFiles, manhwa.offline?.chapter || manhwa.chapter || 0);
+  const nextChapter = chapters[chapters.indexOf(currentReaderChapter) + direction];
+  if (nextChapter === undefined) return;
+
+  currentReaderChapter = nextChapter;
+  renderOfflineReaderChapter();
+}
+
+function changeReaderZoom(delta) {
+  readerZoom = Math.min(READER_MAX_ZOOM, Math.max(READER_MIN_ZOOM, readerZoom + delta));
+  updateReaderControls();
+}
+
+function toggleReaderBlackout() {
+  readerBlackout = !readerBlackout;
+  updateReaderControls();
+}
+
+async function openOfflineReader(manhwaId, chapter = null) {
+  const manhwa = manhwas.find(m => m.id === manhwaId);
+  if (!manhwa) return;
+
+  const files = await getOfflineFiles(manhwaId);
+  if (!files.length) {
+    alert('No offline files were found on this device.');
+    renderOfflineManager(manhwaId);
+    return;
+  }
+
+  closeOfflineReader();
+  currentReaderManhwaId = manhwaId;
+  currentReaderFiles = files;
+  readerZoom = READER_DEFAULT_ZOOM;
+  readerBlackout = false;
+
+  const chapters = getOfflineChapterNumbers(files, manhwa.offline?.chapter || manhwa.chapter || 0);
+  currentReaderChapter = chapters.includes(chapter) ? chapter : chapters[0];
+
+  const modal = document.getElementById('offline-reader-modal');
+  modal.classList.add('active');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  renderOfflineReaderChapter();
+}
+
+function closeOfflineReader() {
+  currentReaderObjectUrls.forEach(url => URL.revokeObjectURL(url));
+  currentReaderObjectUrls = [];
+  currentReaderManhwaId = null;
+  currentReaderFiles = [];
+  currentReaderChapter = null;
+  readerZoom = READER_DEFAULT_ZOOM;
+  readerBlackout = false;
+
+  const modal = document.getElementById('offline-reader-modal');
+  const pages = document.getElementById('offline-reader-pages');
+  if (pages) pages.innerHTML = '';
+
+  if (modal) {
+    modal.classList.remove('active', 'blackout-mode');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+
+  if (!document.getElementById('offline-modal')?.classList.contains('active')) {
+    document.body.style.overflow = '';
   }
 }
 
@@ -2829,7 +3990,8 @@ function addOrUpdateManhwa(id, title, chapter, status, link, lastReadDate, notes
           status,
           link: cleanLink,
           lastReadDate: lastReadDate || getTodayString(),
-          notes: notes.trim()
+          notes: notes.trim(),
+          updatedAt: new Date().toISOString()
         };
         // If link changed, trigger a re-check
         if (m.link !== cleanLink) {
@@ -2851,7 +4013,8 @@ function addOrUpdateManhwa(id, title, chapter, status, link, lastReadDate, notes
       link: cleanLink,
       lastReadDate: lastReadDate || getTodayString(),
       notes: notes.trim(),
-      linkStatus: cleanLink ? 'checking' : 'unknown'
+      linkStatus: cleanLink ? 'checking' : 'unknown',
+      updatedAt: new Date().toISOString()
     };
     manhwas.push(newManhwa);
     if (cleanLink) {
@@ -2863,57 +4026,24 @@ function addOrUpdateManhwa(id, title, chapter, status, link, lastReadDate, notes
   render();
 }
 
-function deleteManhwa(id) {
-  if (confirm("Are you sure you want to remove this manhwa from your tracker?")) {
-    manhwas = manhwas.filter(m => m.id !== id);
-    saveData();
-    render();
-  }
-}
+async function deleteManhwa(id) {
+  const manhwa = manhwas.find(m => m.id === id);
+  if (!manhwa) return false;
 
-function updateLinkForChapter(link, newChapter) {
-  if (!link) return link;
-
-  const chapterPattern = /(chapter|ep|episode)([-_./]?)(\d+(?:[._-]\d+)*)/i;
-  if (!chapterPattern.test(link)) return link;
-
-  return link.replace(chapterPattern, (match, label, separator) => {
-    return `${label}${separator}${String(newChapter)}`;
-  });
-}
-
-function incrementChapter(id) {
-  let updatedLink = null;
-
-  manhwas = manhwas.map(m => {
-    if (m.id === id) {
-      const newChapter = (m.chapter || 0) + 1;
-      const nextLink = updateLinkForChapter(m.link, newChapter);
-
-      if (nextLink !== m.link) {
-        updatedLink = nextLink;
-      }
-
-      return {
-        ...m,
-        chapter: newChapter,
-        link: nextLink,
-        lastReadDate: getTodayString()
-      };
-    }
-    return m;
-  });
-
-  if (updatedLink) {
-    const updatedManhwa = manhwas.find(m => m.id === id);
-    if (updatedManhwa) {
-      updatedManhwa.linkStatus = 'checking';
-      setTimeout(() => pingLink(id, updatedLink), 100);
-    }
+  if (!confirm(`Delete "${manhwa.title}" from your tracker? This will also remove downloaded offline chapters for it from this device.`)) {
+    return false;
   }
 
-  saveData();
+  await deleteOfflineFiles(id);
+  offlineDownloadQueue.jobs = offlineDownloadQueue.jobs.filter(job => job.manhwaId !== id);
+  deletedManhwaIds.add(id);
+  persistDeletedManhwaIds();
+  manhwas = manhwas.filter(m => m.id !== id);
+  removeManhwasFromTierLists([id]);
   render();
+  await publishDeletedManhwaIds([id]);
+  await saveData();
+  return true;
 }
 
 function startReadingManhwa(id) {
@@ -3065,7 +4195,9 @@ function render() {
   
   // 1. Filter
   let filtered = manhwas.filter(m => {
-    const matchesStatus = currentFilter === 'all' || m.status === currentFilter;
+    const matchesStatus = currentFilter === 'all'
+      || m.status === currentFilter
+      || (currentFilter === 'downloaded' && getOfflineItemCount(m) > 0);
     const matchesSearch = searchQuery === '' || 
       m.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (m.notes && m.notes.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -3112,6 +4244,8 @@ function render() {
       const statusTitle = m.status.replace('-', ' ');
       const formattedDate = formatDateDisplay(m.lastReadDate);
       const isBroken = m.linkStatus === 'broken';
+      const offlineCount = getOfflineItemCount(m);
+      const hasOffline = offlineCount > 0;
       
       return `
         <div class="manhwa-card" data-id="${m.id}">
@@ -3119,6 +4253,16 @@ function render() {
             <div class="card-title-area">
               <h3 class="card-title">${escapeHTML(m.title)}</h3>
               <span class="status-badge status-${m.status}">${statusTitle}</span>
+              ${hasOffline ? `
+                <span class="offline-badge" title="Saved for offline reading">
+                  <svg class="icon" style="width: 12px; height: 12px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                  </svg>
+                  ${offlineCount}
+                </span>
+              ` : ''}
             </div>
             
             <div class="card-actions-quick">
@@ -3164,28 +4308,28 @@ function render() {
               </div>
             ` : ''}
 
+            <div class="detail-row">
+              <span class="detail-label">Offline Copy</span>
+              <span class="detail-value">${hasOffline ? `${offlineCount} file${offlineCount === 1 ? '' : 's'} · ${formatBytes(getOfflineArchiveSize(m))}` : 'Not saved'}</span>
+            </div>
+
             ${m.notes ? `<p class="card-notes">${escapeHTML(m.notes)}</p>` : ''}
           </div>
 
           <div class="card-actions">
-            <button class="btn-icon delete-card-btn" title="Delete Manhwa" aria-label="Delete manhwa">
-              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="3 6 5 6 21 6"></polyline>
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                <line x1="10" y1="11" x2="10" y2="17"></line>
-                <line x1="14" y1="11" x2="14" y2="17"></line>
-              </svg>
-            </button>
-
             <div class="primary-card-actions">
+              ${hasOffline ? `
+                <button class="quick-add-btn read-offline-btn">Read Offline</button>
+                <button class="quick-add-btn offline-manager-btn">Manage Offline</button>
+              ` : `
+                <button class="quick-add-btn offline-manager-btn">Download Offline</button>
+              `}
               ${m.link ? `
                 <button class="quick-add-btn toggle-link-status-btn" title="Toggle broken flag manually">Flag Link</button>
               ` : ''}
               ${m.status === 'plan-to-read' ? `
                 <button class="quick-add-btn start-reading-btn">Start Reading</button>
-              ` : `
-                <button class="quick-add-btn plus-one-btn">+1 Chapter</button>
-              `}
+              ` : ''}
             </div>
           </div>
         </div>
@@ -3195,6 +4339,7 @@ function render() {
     // Reattach Event Listeners to cards
     attachCardListeners();
   }
+  renderTierLists();
 }
 
 function updateStats() {
@@ -3207,6 +4352,12 @@ function updateStats() {
   const planToReadEl = document.getElementById('stat-plan-to-read');
   if (planToReadEl) {
     planToReadEl.textContent = planToReadCount;
+  }
+
+  const offlineCount = manhwas.filter(m => getOfflineItemCount(m) > 0).length;
+  const offlineEl = document.getElementById('stat-offline');
+  if (offlineEl) {
+    offlineEl.textContent = offlineCount;
   }
   
   // Find latest active date
@@ -3243,6 +4394,7 @@ function escapeHTML(str) {
 const modal = document.getElementById('manhwa-modal');
 const modalTitle = document.getElementById('modal-title');
 const manhwaForm = document.getElementById('manhwa-form');
+const formDeleteButton = document.getElementById('form-delete');
 
 function updateModalFormFields(status) {
   const dateGroup = document.getElementById('form-group-date');
@@ -3265,6 +4417,7 @@ function openModal(title, mode = 'add', data = null) {
   
   const statusSelect = document.getElementById('input-status');
   if (mode === 'edit' && data) {
+    formDeleteButton.hidden = false;
     document.getElementById('manhwa-id').value = data.id;
     document.getElementById('input-title').value = data.title;
     document.getElementById('input-chapter').value = data.chapter;
@@ -3274,6 +4427,7 @@ function openModal(title, mode = 'add', data = null) {
     document.getElementById('input-notes').value = data.notes || '';
     updateModalFormFields(data.status);
   } else {
+    formDeleteButton.hidden = true;
     manhwaForm.reset();
     document.getElementById('manhwa-id').value = '';
     document.getElementById('input-date').value = getTodayString();
@@ -3288,6 +4442,7 @@ function closeModal() {
   modal.setAttribute('aria-hidden', 'true');
   document.body.style.overflow = ''; // Unlock scrolling
   manhwaForm.reset();
+  formDeleteButton.hidden = true;
 }
 
 function initBackToTopButton() {
@@ -3319,15 +4474,6 @@ function initBackToTopButton() {
 }
 
 function attachCardListeners() {
-  // Plus One Button
-  document.querySelectorAll('.plus-one-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const card = e.target.closest('.manhwa-card');
-      const id = card.getAttribute('data-id');
-      incrementChapter(id);
-    });
-  });
-
   // Start Reading Button
   document.querySelectorAll('.start-reading-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -3349,15 +4495,6 @@ function attachCardListeners() {
     });
   });
 
-  // Delete Button
-  document.querySelectorAll('.delete-card-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const card = e.target.closest('.manhwa-card');
-      const id = card.getAttribute('data-id');
-      deleteManhwa(id);
-    });
-  });
-
   // Toggle Link status flag manually
   document.querySelectorAll('.toggle-link-status-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -3366,10 +4503,35 @@ function attachCardListeners() {
       toggleLinkBroken(id);
     });
   });
+
+  // Offline manager
+  document.querySelectorAll('.offline-manager-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const card = e.target.closest('.manhwa-card');
+      const id = card.getAttribute('data-id');
+      openOfflineManager(id);
+    });
+  });
+
+  // Offline reader
+  document.querySelectorAll('.read-offline-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      const card = e.target.closest('.manhwa-card');
+      const id = card.getAttribute('data-id');
+      const manhwa = manhwas.find(m => m.id === id);
+
+      if (getOfflineItemCount(manhwa) > 0) {
+        await openOfflineReader(id);
+      } else {
+        openOfflineManager(id);
+      }
+    });
+  });
 }
 
 // Bind Page Controllers
 document.addEventListener('DOMContentLoaded', async () => {
+  initTierLists();
   await initApp();
   initBackToTopButton();
 
@@ -3399,11 +4561,67 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('modal-close').addEventListener('click', closeModal);
   document.getElementById('modal-overlay').addEventListener('click', closeModal);
   document.getElementById('form-cancel').addEventListener('click', closeModal);
+  formDeleteButton.addEventListener('click', async () => {
+    const id = document.getElementById('manhwa-id').value;
+    if (id && await deleteManhwa(id)) {
+      closeModal();
+    }
+  });
   
   // Escape key closes modal
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.classList.contains('active')) {
+    if (e.key !== 'Escape') return;
+
+    if (document.getElementById('offline-reader-modal')?.classList.contains('active')) {
+      closeOfflineReader();
+    } else if (document.getElementById('offline-modal')?.classList.contains('active')) {
+      closeOfflineManager();
+    } else if (modal.classList.contains('active')) {
       closeModal();
+    }
+  });
+
+  document.getElementById('offline-modal-close').addEventListener('click', closeOfflineManager);
+  document.getElementById('offline-modal-overlay').addEventListener('click', closeOfflineManager);
+  document.getElementById('offline-reader-close').addEventListener('click', closeOfflineReader);
+  document.getElementById('offline-reader-overlay').addEventListener('click', closeOfflineReader);
+  document.getElementById('reader-prev-chapter-btn').addEventListener('click', () => changeOfflineReaderChapter(-1));
+  document.getElementById('reader-next-chapter-btn').addEventListener('click', () => changeOfflineReaderChapter(1));
+  document.getElementById('reader-zoom-out-btn').addEventListener('click', () => changeReaderZoom(-READER_ZOOM_STEP));
+  document.getElementById('reader-zoom-in-btn').addEventListener('click', () => changeReaderZoom(READER_ZOOM_STEP));
+  document.getElementById('reader-blackout-btn').addEventListener('click', toggleReaderBlackout);
+
+  const offlineFileInput = document.getElementById('offline-file-input');
+  document.getElementById('offline-browse-btn').addEventListener('click', () => {
+    offlineFileInput.click();
+  });
+
+  offlineFileInput.addEventListener('change', async (e) => {
+    if (!currentOfflineManhwaId) return;
+
+    const files = Array.from(e.target.files || []);
+    e.target.value = '';
+    await addOfflineFilesFromInput(currentOfflineManhwaId, files);
+  });
+
+  document.getElementById('asura-queue-btn').addEventListener('click', async () => {
+    if (currentOfflineManhwaId) {
+      await queueAsuraChapterRange(currentOfflineManhwaId);
+    }
+  });
+
+  document.getElementById('offline-read-btn').addEventListener('click', async () => {
+    if (currentOfflineManhwaId) {
+      await openOfflineReader(currentOfflineManhwaId);
+    }
+  });
+
+  document.getElementById('offline-clear-btn').addEventListener('click', async () => {
+    if (!currentOfflineManhwaId) return;
+
+    if (confirm('Delete every downloaded chapter for this manhwa from this device?')) {
+      await deleteOfflineFiles(currentOfflineManhwaId);
+      updateOfflineMetadata(currentOfflineManhwaId, []);
     }
   });
 

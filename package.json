@@ -1,0 +1,16 @@
+{
+  "name": "luxe-manhwa-tracker",
+  "version": "1.0.0",
+  "description": "An offline-first manhwa reading tracker.",
+  "main": "electron-main.js",
+  "scripts": {
+    "start": "node electron-start.cjs",
+    "start:detached": "node electron-detached.cjs",
+    "import:tracker": "node scripts/import-tracker-data.cjs",
+    "check": "node --check app.js && node --check tier-lists.js && node --check tier-share-codec.js && node --check share.js && node --check electron-main.js && node --check electron-preload.js && node --check electron-start.cjs && node --check electron-detached.cjs && node --check scripts/import-tracker-data.cjs && npm run test:electron",
+    "test:electron": "node --test electron-main.test.cjs"
+  },
+  "devDependencies": {
+    "electron": "^43.1.1"
+  }
+}

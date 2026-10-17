@@ -1,1 +1,7 @@
-data/
+data/*
+!data/manhwas.json
+node_modules/
+dist/
+out/
+backups/
+.DS_Store

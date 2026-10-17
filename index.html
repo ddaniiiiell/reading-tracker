@@ -42,6 +42,13 @@
       </div>
     </header>
 
+    <nav class="section-nav" aria-label="Tracker sections">
+      <button id="library-tab" class="section-tab active" type="button" aria-current="page">Library</button>
+      <button id="tier-lists-tab" class="section-tab" type="button">Tier Lists</button>
+    </nav>
+
+    <div id="library-view">
+
     <!-- Stats Dashboard -->
     <section class="stats-dashboard" id="stats-panel">
       <div class="stat-card">
@@ -57,6 +64,11 @@
       <div class="stat-card">
         <span class="stat-label">Plan to Read</span>
         <span class="stat-value" id="stat-plan-to-read">0</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-card">
+        <span class="stat-label">Offline</span>
+        <span class="stat-value" id="stat-offline">0</span>
       </div>
       <div class="stat-divider"></div>
       <div class="stat-card">
@@ -83,6 +95,7 @@
             <option value="plan-to-read">Plan to Read</option>
             <option value="completed">Completed</option>
             <option value="on-hold">On Hold</option>
+            <option value="downloaded">Downloaded</option>
           </select>
         </div>
 
@@ -139,12 +152,59 @@
       </div>
     </main>
 
+    </div>
+
+    <section id="tier-lists-view" class="tier-lists-view hidden" aria-labelledby="tier-lists-heading">
+      <div class="tier-page-heading">
+        <div>
+          <p class="tier-eyebrow">Your rankings</p>
+          <h2 id="tier-lists-heading">Tier Lists</h2>
+          <p>Rank titles from your reading library, then share an image or a clickable link.</p>
+        </div>
+        <div class="tier-page-actions">
+          <button id="tier-copy-link-btn" class="btn btn-secondary" type="button">Copy Share Link</button>
+          <button id="tier-share-btn" class="btn btn-primary" type="button">Share Image</button>
+          <button id="tier-download-btn" class="btn btn-secondary" type="button">Download PNG</button>
+        </div>
+      </div>
+
+      <div class="tier-list-toolbar">
+        <label for="tier-list-select">List</label>
+        <div class="select-wrapper tier-list-select-wrapper">
+          <select id="tier-list-select" aria-label="Choose tier list"></select>
+        </div>
+        <button id="tier-new-btn" class="btn btn-secondary" type="button">New List</button>
+        <button id="tier-rename-btn" class="btn btn-tertiary" type="button">Rename</button>
+        <button id="tier-delete-btn" class="btn btn-tertiary" type="button">Delete List</button>
+      </div>
+
+      <div id="tier-link-output" class="tier-link-output hidden">
+        <label for="tier-link-input">Static share link</label>
+        <input id="tier-link-input" type="text" readonly aria-label="Static tier list share link">
+        <p>Friends can click titles to open your saved reading links. The link keeps this version of the list.</p>
+      </div>
+
+      <p id="tier-save-status" class="tier-save-status" role="status" aria-live="polite"></p>
+      <div id="tier-board" class="tier-board" aria-label="Tier list board"></div>
+
+      <div class="tier-pool-heading">
+        <div>
+          <h3>Unranked titles <span id="tier-unranked-count"></span></h3>
+          <p>Drag a title into a tier, or use its menu on a phone or keyboard.</p>
+        </div>
+        <input id="tier-search" type="search" placeholder="Find a title..." aria-label="Search unranked titles">
+      </div>
+      <div id="tier-unranked" class="tier-unranked" data-tier="unranked" aria-label="Unranked titles"></div>
+    </section>
+
     <!-- Footer -->
     <footer class="footer">
       <p>&copy; 2026 Luxe Noir. All rights reserved.</p>
     </footer>
 
   </div>
+
+  <input id="offline-file-input" class="visually-hidden" type="file" accept="image/*,application/pdf" multiple>
 
   <button id="back-to-top-btn" class="back-to-top-btn" type="button" aria-label="Back to top" title="Back to top">
     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -208,14 +268,110 @@
         </div>
 
         <div class="form-actions">
-          <button type="button" id="form-cancel" class="btn btn-tertiary">Cancel</button>
-          <button type="submit" id="form-submit" class="btn btn-primary">Save Manhwa</button>
+          <button type="button" id="form-delete" class="btn btn-danger" hidden>Delete Manhwa</button>
+          <div class="form-actions-primary">
+            <button type="button" id="form-cancel" class="btn btn-tertiary">Cancel</button>
+            <button type="submit" id="form-submit" class="btn btn-primary">Save Manhwa</button>
+          </div>
         </div>
       </form>
     </div>
   </div>
 
+  <!-- Modal: Offline Downloads -->
+  <div id="offline-modal" class="modal" aria-hidden="true" role="dialog">
+    <div class="modal-overlay" id="offline-modal-overlay"></div>
+    <div class="modal-content modal-content-wide">
+      <button id="offline-modal-close" class="modal-close-btn" aria-label="Close offline manager">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <h2 id="offline-modal-title">Offline Chapter</h2>
+
+      <div class="offline-summary" id="offline-summary"></div>
+
+      <div class="offline-actions-panel">
+        <button id="offline-browse-btn" class="btn btn-primary" type="button">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          Add Files
+        </button>
+        <button id="offline-read-btn" class="btn btn-secondary" type="button">Read Offline</button>
+        <button id="offline-clear-btn" class="btn btn-tertiary" type="button">Delete Download</button>
+      </div>
+
+      <div class="offline-url-panel">
+        <label>Chapter Download</label>
+        <div id="connector-download-status" class="connector-download-status" role="status"></div>
+        <div id="connector-download-controls" hidden>
+          <label for="asura-chapter-url" id="connector-source-label">Tracked Chapter URL</label>
+          <input id="asura-chapter-url" type="url" readonly>
+          <div class="chapter-range-grid">
+            <div class="form-group">
+              <label for="asura-start-chapter">Start Chapter</label>
+              <input id="asura-start-chapter" type="number" min="0" step="1">
+            </div>
+            <div class="form-group">
+              <label for="asura-end-chapter">End Chapter</label>
+              <input id="asura-end-chapter" type="number" min="0" step="1">
+            </div>
+          </div>
+          <div class="offline-url-actions">
+            <small id="connector-download-help" class="form-help"></small>
+            <button id="asura-queue-btn" class="btn btn-primary" type="button">Queue Chapters</button>
+          </div>
+        </div>
+
+        <div id="offline-download-queue" class="offline-download-queue"></div>
+        <div id="offline-missing-chapters" class="offline-missing-chapters" aria-live="polite"></div>
+      </div>
+
+      <div id="offline-file-list" class="offline-file-list"></div>
+    </div>
+  </div>
+
+  <!-- Modal: Offline Reader -->
+  <div id="offline-reader-modal" class="modal reader-modal" aria-hidden="true" role="dialog">
+    <div class="modal-overlay" id="offline-reader-overlay"></div>
+    <div class="modal-content reader-content">
+      <button id="offline-reader-close" class="modal-close-btn" type="button" title="Close reader (Esc)" aria-label="Close offline reader" aria-keyshortcuts="Escape">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <div class="reader-toolbar">
+        <div class="reader-chapter-bar">
+          <div class="reader-chapter-controls" aria-label="Chapter navigation">
+            <button id="reader-prev-chapter-btn" class="btn-icon" type="button" title="Previous downloaded chapter" aria-label="Previous downloaded chapter">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"></path></svg>
+            </button>
+            <button id="reader-next-chapter-btn" class="btn-icon" type="button" title="Next downloaded chapter" aria-label="Next downloaded chapter">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"></path></svg>
+            </button>
+          </div>
+          <h2 id="offline-reader-title">Ch</h2>
+        </div>
+        <div class="reader-controls" aria-label="Offline reader controls">
+          <button id="reader-zoom-out-btn" class="btn-icon" type="button" title="Zoom out" aria-label="Zoom out">-</button>
+          <button id="reader-zoom-in-btn" class="btn-icon" type="button" title="Zoom in" aria-label="Zoom in">+</button>
+          <button id="reader-blackout-btn" class="btn-icon" type="button" title="Enter blackout mode" aria-label="Toggle blackout mode" aria-pressed="false">
+            <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"></rect></svg>
+          </button>
+        </div>
+      </div>
+      <div id="offline-reader-pages" class="offline-reader-pages"></div>
+    </div>
+  </div>
+
   <!-- Scripts -->
   <script src="app.js"></script>
+  <script src="tier-share-codec.js"></script>
+  <script src="tier-lists.js"></script>
 </body>
 </html>
